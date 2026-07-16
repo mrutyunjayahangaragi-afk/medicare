@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths   = ["tests"]
+asyncio_mode = "auto"
+# Verbose output by default when running pytest from the project root
+addopts = "-v"
+
+# Log captured output level during tests
+log_cli       = false
+log_level     = "INFO"
+log_cli_level = "INFO"

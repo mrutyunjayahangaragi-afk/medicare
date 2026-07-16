@@ -1,0 +1,1201 @@
+description,severity,emergency_type,age_group,conscious,breathing_difficulty,severe_breathing_difficulty,bleeding_level,chest_pain,seizure,stroke_signs,burn_level,allergic_reaction,pregnancy_emergency,major_accident,violence_risk
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Requesting immediate assistance.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,fire,adult,True,False,False,none,False,False,False,minor,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Scene is safe.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Requesting immediate assistance.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Family member is calling for help.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Requesting immediate assistance.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Family member is calling for help.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Family member is calling for help.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points. Situation ongoing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Scene is safe.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Scene is safe.",medium,accident,adult,True,True,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Requesting immediate assistance.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Family member is calling for help.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points. Requesting immediate assistance.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Unclear history.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Situation ongoing.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Requesting immediate assistance.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Scene is safe.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,accident,adult,True,True,False,minor,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Family member is calling for help.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Situation ongoing.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Family member is calling for help.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Requesting immediate assistance.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR. Unclear history.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Situation ongoing.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty. Scene is safe.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Situation ongoing.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Requesting immediate assistance.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Family member is calling for help.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,medical,child,True,True,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Requesting immediate assistance.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Diabetic patient with blood sugar 350, weak but responsive. Requesting immediate assistance.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Situation ongoing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,senior,True,True,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Family member is calling for help.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Requesting immediate assistance.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting. Situation ongoing.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Unclear history.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Requesting immediate assistance.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Minor bruise on knee after a fall. Alert.,low,other,senior,True,True,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Family member is calling for help.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Scene is safe.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Situation ongoing.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Situation ongoing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Requesting immediate assistance.,high,medical,senior,True,False,False,none,True,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Scene is safe.,low,other,adult,True,True,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Small burn from steam on hand. Mild redness. Scene is safe.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand. Scene is safe.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive. Family member is calling for help.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,False,False,none,False,False,False,minor,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive. Situation ongoing.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Family member is calling for help.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,adult,True,True,False,none,False,True,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR. Situation ongoing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Twisted ankle during a walk. Mild swelling but able to stand. Unclear history.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Requesting immediate assistance.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Requesting immediate assistance.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand. Unclear history.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Scene is safe.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Situation ongoing.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Requesting immediate assistance.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Requesting immediate assistance.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Unclear history.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Scene is safe.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,senior,True,True,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Unclear history.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Situation ongoing.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Requesting immediate assistance.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Scene is safe.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Family member is calling for help.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Requesting immediate assistance.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Unclear history.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Unclear history.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Family member is calling for help.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,True,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"High fever 40°C for two days, unable to reduce with medication. Scene is safe.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Unclear history.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Requesting immediate assistance.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Requesting immediate assistance.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Situation ongoing.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Situation ongoing.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Scene is safe.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious. Unclear history.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Unclear history.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Scene is safe.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Situation ongoing.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Minor bruise on knee after a fall. Alert.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Requesting immediate assistance.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Scene is safe.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Situation ongoing.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Person submerged in water, rescued, not breathing, pale. Situation ongoing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Person submerged in water, rescued, not breathing, pale. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Family member is calling for help.",high,medical,senior,True,False,False,none,True,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Family member is calling for help.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand. Requesting immediate assistance.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Situation ongoing.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Scene is safe.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,accident,adult,True,True,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Family member is calling for help.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Family member is calling for help.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Family member is calling for help.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Scene is safe.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Unclear history.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Scene is safe.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,fire,adult,True,False,False,none,False,False,False,minor,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,False,True,none,False,False,False,severe,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Family member is calling for help.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Family member is calling for help.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Situation ongoing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Requesting immediate assistance.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Scene is safe.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Family member is calling for help.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand. Situation ongoing.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting. Requesting immediate assistance.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Requesting immediate assistance.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,False,False,none,True,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Situation ongoing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,True,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Scene is safe.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand. Requesting immediate assistance.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,fire,adult,True,True,False,none,False,False,False,moderate,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Situation ongoing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Situation ongoing.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Requesting immediate assistance.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Family member is calling for help.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Family member is calling for help.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting. Unclear history.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Unclear history.",medium,medical,child,True,True,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Requesting immediate assistance.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,False,False,True,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Requesting immediate assistance.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Unclear history.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Unclear history.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Unclear history.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Requesting immediate assistance.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Situation ongoing.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,True,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty. Situation ongoing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,True,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Scene is safe.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Requesting immediate assistance.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Unclear history.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,adult,True,True,False,none,False,True,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Requesting immediate assistance.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+"Mild headache for a few hours, no fever or vomiting. Unclear history.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Family member is calling for help.",critical,accident,adult,False,False,True,severe,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Situation ongoing.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Requesting immediate assistance.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Requesting immediate assistance.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Family member is calling for help.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Unclear history.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Scene is safe.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally. Unclear history.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,True,False,True,none,False,False,False,none,True,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Unclear history.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,False,False,none,False,False,False,minor,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Scene is safe.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Scene is safe.",medium,accident,adult,True,True,False,minor,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Scene is safe.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Requesting immediate assistance.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Situation ongoing.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Requesting immediate assistance.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting. Scene is safe.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Situation ongoing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Person submerged in water, rescued, not breathing, pale. Family member is calling for help.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Family member is calling for help.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Situation ongoing.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Situation ongoing.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Family member is calling for help.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,elder_care,senior,True,True,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand. Requesting immediate assistance.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Situation ongoing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Situation ongoing.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Scene is safe.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Situation ongoing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Situation ongoing.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Situation ongoing.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious. Scene is safe.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Minor bruise on knee after a fall. Alert.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty. Requesting immediate assistance.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Family member is calling for help.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Situation ongoing.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Drug overdose, completely unresponsive, laboured breathing. Family member is calling for help.",critical,medical,adult,False,False,True,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Unclear history.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Small burn from steam on hand. Mild redness. Family member is calling for help.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,False,False,none,False,False,False,minor,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Unclear history.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Situation ongoing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Requesting immediate assistance.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally. Unclear history.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Situation ongoing.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Family member is calling for help.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Family member is calling for help.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Unclear history.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Requesting immediate assistance.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Requesting immediate assistance.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Scene is safe.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points. Scene is safe.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious. Requesting immediate assistance.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Unclear history.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Requesting immediate assistance.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Requesting immediate assistance.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,False,True,severe,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points. Requesting immediate assistance.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Minor bruise on knee after a fall. Alert.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,fire,adult,True,False,False,none,False,False,False,minor,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Scene is safe.",high,medical,senior,True,True,False,none,False,False,True,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Scene is safe.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Requesting immediate assistance.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Unclear history.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Situation ongoing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Unclear history.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious. Scene is safe.",low,other,senior,True,True,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Scene is safe.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Requesting immediate assistance.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Scene is safe.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Minor bruise on knee after a fall. Alert. Unclear history.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Minor bruise on knee after a fall. Alert.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Requesting immediate assistance.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Scene is safe.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious. Scene is safe.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Unclear history.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Scene is safe.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Requesting immediate assistance.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Unclear history.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Unclear history.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Situation ongoing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,False,True,none,False,False,False,severe,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points. Requesting immediate assistance.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Family member is calling for help.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Slight dizziness after standing up quickly. No other symptoms. Unclear history.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Scene is safe.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Unclear history.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR. Requesting immediate assistance.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Family member is calling for help.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Situation ongoing.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Scene is safe.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Scene is safe.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Situation ongoing.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Situation ongoing.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Family member is calling for help.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points. Unclear history.",critical,medical,adult,False,False,True,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Scene is safe.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Unclear history.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Unclear history.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Family member is calling for help.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Unclear history.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Scene is safe.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,False,True,none,False,False,False,severe,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty. Family member is calling for help.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,fire,adult,False,False,True,none,False,False,False,severe,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Requesting immediate assistance.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Person submerged in water, rescued, not breathing, pale.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Mild nausea after eating. No vomiting, fully conscious. Situation ongoing.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Family member is calling for help.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Unclear history.",medium,elder_care,senior,True,True,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Unclear history.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious. Requesting immediate assistance.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Requesting immediate assistance.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Requesting immediate assistance.,medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Unclear history.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR. Requesting immediate assistance.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Situation ongoing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Unclear history.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Unclear history.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Unclear history.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Requesting immediate assistance.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Requesting immediate assistance.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Scene is safe.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Situation ongoing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Scene is safe.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Unclear history.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Minor bruise on knee after a fall. Alert. Situation ongoing.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Requesting immediate assistance.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Situation ongoing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Situation ongoing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Scene is safe.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious. Unclear history.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale. Unclear history.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Unclear history.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Situation ongoing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Scene is safe.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech. Requesting immediate assistance.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,True,False,none,False,False,True,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious. Requesting immediate assistance.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Situation ongoing.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Unclear history.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Unclear history.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally. Scene is safe.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Scene is safe.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,True,False,True,none,False,False,False,none,True,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Situation ongoing.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,medical,child,True,True,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Family member is calling for help.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,adult,True,True,False,none,False,True,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,adult,True,True,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Unclear history.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Requesting immediate assistance.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Unclear history.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally. Family member is calling for help.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Unclear history.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Scene is safe.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Situation ongoing.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Scene is safe.",high,medical,senior,True,True,False,none,False,False,True,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Requesting immediate assistance.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Situation ongoing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Unclear history.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Scene is safe.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Twisted ankle during a walk. Mild swelling but able to stand. Requesting immediate assistance.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,senior,True,True,False,none,False,False,True,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Twisted ankle during a walk. Mild swelling but able to stand.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,senior,True,True,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant. Requesting immediate assistance.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Small burn from steam on hand. Mild redness. Family member is calling for help.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Small burn from steam on hand. Mild redness. Family member is calling for help.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious. Situation ongoing.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Scene is safe.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Family member is calling for help.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Scene is safe.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive. Situation ongoing.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding. Family member is calling for help.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Scene is safe.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Family member is calling for help.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Unclear history.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Scene is safe.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Mild sore throat, no fever, able to eat normally. Family member is calling for help.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Family member is calling for help.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Unclear history.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Situation ongoing.,high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Family member is calling for help.,high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Unclear history.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke. Family member is calling for help.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Slight dizziness after standing up quickly. No other symptoms.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Scene is safe.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Patient reporting severe chest pain radiating to left arm. Conscious but distressed. Unclear history.,high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive. Situation ongoing.",low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Person collapsed, not breathing, no pulse. Bystander performing CPR.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious. Requesting immediate assistance.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Requesting immediate assistance.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,medical,adult,True,False,True,none,False,False,False,none,True,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,fire,adult,True,False,False,none,False,False,False,moderate,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Unclear history.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Situation ongoing.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing.,high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Patient with moderate abdominal pain for 4 hours, no bleeding, conscious.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Requesting immediate assistance.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert. Family member is calling for help.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Knife wound to shoulder, bleeding controlled but significant.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Mild nausea after eating. No vomiting, fully conscious.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Slight dizziness after standing up quickly. No other symptoms.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Seizure episode lasting 3 minutes. Patient now confused but breathing. Family member is calling for help.,high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,True,False,moderate,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Allergic reaction with throat swelling, severe difficulty breathing, near fainting. Scene is safe.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Diabetic patient with blood sugar 350, weak but responsive. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Unclear history.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Mild sore throat, no fever, able to eat normally.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Electrocution victim unresponsive, severe burns at contact points.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"High fever 40°C for two days, unable to reduce with medication. Situation ongoing.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Unclear history.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Unclear history.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure. Family member is calling for help.,medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Elderly person fell from bed. Complains of hip pain, conscious. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Moderate smoke inhalation, coughing, slightly short of breath but conscious.",medium,accident,adult,True,True,False,minor,False,False,False,none,False,False,False,False
+Deep laceration requiring stitches. Bleeding controlled with pressure.,medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Unclear history.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Severe head trauma from high-speed collision, unconscious, heavy bleeding.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Gunshot wound to chest, unconscious, critical blood loss. Family member is calling for help.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Minor vehicle collision, driver has neck pain and is alert. Family member is calling for help.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Moderate burns on both arms from gas explosion. In pain, conscious.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Sudden onset facial drooping, slurred speech, arm weakness — possible stroke.",high,medical,senior,True,False,False,none,False,False,True,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing.",medium,elder_care,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Unclear history.",critical,medical,adult,True,True,True,none,False,False,False,none,True,False,False,False
+"Minor cut on finger while cooking. Small amount of bleeding, alert and responsive. Family member is calling for help.",low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty. Situation ongoing.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Person submerged in water, rescued, not breathing, pale.",critical,medical,adult,False,True,True,none,False,False,False,none,False,False,False,False
+Minor bruise on knee after a fall. Alert.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Small burn from steam on hand. Mild redness. Scene is safe.,low,medical,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"High fever 40°C for two days, unable to reduce with medication. Family member is calling for help.",medium,accident,adult,True,False,False,minor,False,False,False,none,False,False,False,False
+"Small kitchen fire extinguished. Minor smoke inhalation, coughing. Unclear history.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed.",critical,fire,adult,False,True,True,none,False,False,False,severe,False,False,False,False
+"Severe abdominal pain radiating to back, possible internal bleeding. Family member is calling for help.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Newborn not breathing after delivery, emergency resuscitation needed. Unclear history.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures. Requesting immediate assistance.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+"High fever 40°C for two days, unable to reduce with medication.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,medical,child,True,False,False,none,False,False,False,none,False,False,False,False
+"Broken wrist from a fall. In pain but stable, no bleeding.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Drug overdose, completely unresponsive, laboured breathing. Family member is calling for help.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Minor vehicle collision, driver has neck pain and is alert.",medium,fire,adult,True,True,False,none,False,False,False,minor,False,False,False,False
+"Mild headache for a few hours, no fever or vomiting.",low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+"Full body severe burns, patient unconscious, severe breathing difficulty.",critical,accident,adult,False,True,True,severe,False,False,False,none,False,False,True,False
+"Pregnancy with heavy bleeding at 30 weeks, conscious.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Small burn from steam on hand. Mild redness.,low,other,senior,True,False,False,none,False,False,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury.",high,fire,adult,True,True,False,none,False,False,False,moderate,False,False,False,False
+"Adult male, sudden weakness in arm and leg, slurred speech.",high,medical,senior,True,True,False,none,True,False,False,none,False,False,False,False
+"Major motorcycle accident, rider conscious but pinned under vehicle. Suspected fractures.",high,medical,adult,True,False,False,none,False,True,False,none,False,False,False,False
+"Major fall from scaffold, conscious, possible spinal injury. Situation ongoing.",high,accident,adult,True,False,False,moderate,False,False,False,none,False,False,True,False
+Insect bite with local redness. No swelling of lips or throat. Situation ongoing.,low,medical,adult,True,False,False,none,False,False,False,none,False,False,False,False
+Insect bite with local redness. No swelling of lips or throat. Family member is calling for help.,low,other,adult,True,False,False,none,False,False,False,none,False,False,False,False

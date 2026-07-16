@@ -1,0 +1,210 @@
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+import TopNavbar from "@/components/dashboard/TopNavbar";
+import WelcomeCard from "@/components/dashboard/WelcomeCard";
+import EmergencySOS from "@/components/dashboard/EmergencySOS";
+import StatsSection from "@/components/dashboard/StatsSection";
+import RecentRequests, { type EmergencyRequest } from "@/components/dashboard/RecentRequests";
+import NearbyHelp from "@/components/dashboard/NearbyHelp";
+import EmergencyContacts from "@/components/dashboard/EmergencyContacts";
+import HealthTips from "@/components/dashboard/HealthTips";
+import type { EmergencyContact } from "@/types/database";
+
+export const metadata: Metadata = {
+  title: "User Dashboard — Medicare",
+};
+
+function mapStatus(status: string): EmergencyRequest["status"] {
+  switch (status) {
+    case "pending":
+      return "Pending";
+    case "accepted":
+      return "Accepted";
+    case "in_progress":
+    case "arrived":
+    case "volunteer_assigned":
+    case "hospital_assigned":
+      return "In Progress";
+    case "completed":
+      return "Completed";
+    case "cancelled":
+      return "Cancelled";
+    default:
+      return "Pending";
+  }
+}
+
+function mapSeverity(severity: string): EmergencyRequest["severity"] {
+  switch (severity) {
+    case "low":
+      return "Low";
+    case "medium":
+      return "Medium";
+    case "high":
+      return "High";
+    case "critical":
+    default:
+      return "Critical";
+  }
+}
+
+export default async function DashboardPage() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  // Fetch optional profile info
+  const { data: profileData, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError && profileError.code !== "PGRST116") {
+    // Log PGRST116 (no row found) or other errors safely on the server
+    console.error("[Medicare Dashboard] Profile query error:", profileError.message);
+  }
+
+  // Check if it is an email/password user vs Google OAuth user.
+  // Google OAuth users don't require verification or is_verified check.
+  const isGoogleUser =
+    user.app_metadata?.provider === "google" ||
+    user.identities?.some((id) => id.provider === "google");
+
+  if (!isGoogleUser) {
+    // Email/password users must be verified to access the dashboard.
+    if (!profileData || !profileData.is_verified) {
+      redirect("/login");
+    }
+  }
+
+  // Role check: Dashboard is only for normal users.
+  if (profileData) {
+    if (profileData.role === "volunteer") {
+      redirect("/coming-soon?role=volunteer");
+    }
+    if (profileData.role === "hospital") {
+      redirect("/coming-soon?role=hospital");
+    }
+  }
+
+  // Resolve user info safely for presentation
+  const resolvedEmail = user.email || "";
+  const resolvedName =
+    profileData?.full_name ||
+    user.user_metadata?.full_name ||
+    user.user_metadata?.name ||
+    resolvedEmail.split("@")[0] ||
+    "User";
+
+  const resolvedAvatar =
+    profileData?.avatar_url ||
+    user.user_metadata?.avatar_url ||
+    user.user_metadata?.picture ||
+    null;
+
+  const resolvedUser = {
+    email: resolvedEmail,
+    fullName: resolvedName,
+    avatarUrl: resolvedAvatar,
+  };
+
+  // Fetch real emergency requests from Supabase
+  const { data: requestsData, error: requestsError } = await supabase
+    .from("emergency_requests")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (requestsError) {
+    if (requestsError.message?.includes("Could not find the table") || requestsError.code === "PGRST116" || requestsError.code === "42P01") {
+      console.warn("[Medicare Dashboard] 'emergency_requests' table is not yet configured in Supabase. Using fallback empty state.");
+    } else {
+      console.error("[Medicare Dashboard] Requests query error:", requestsError.message);
+    }
+  }
+
+  // Fetch emergency contacts count and list
+  const { data: contactsData, error: contactsError } = await supabase
+    .from("emergency_contacts")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("is_primary", { ascending: false })
+    .order("created_at", { ascending: false });
+
+  if (contactsError && contactsError.code !== "42P01") {
+    console.error("[Medicare Dashboard] Contacts query error:", contactsError.message);
+  }
+
+  const contacts = contactsData ?? [];
+
+  // Map requests to Dashboard UI structure
+  const requests: EmergencyRequest[] = (requestsData || []).map((req) => ({
+    id: req.id,
+    emergencyType: req.emergency_type,
+    createdAt: req.created_at,
+    location:
+      req.manual_address ||
+      (req.latitude && req.longitude
+        ? `${(req.latitude as number).toFixed(4)}, ${(req.longitude as number).toFixed(4)}`
+        : "Location unavailable"),
+    severity: mapSeverity(req.severity),
+    status: mapStatus(req.status),
+  }));
+
+  // Calculate statistics from real data
+  const totalRequests     = requests.length;
+  const pendingRequests   = requests.filter((r) => r.status === "Pending").length;
+  const activeRequests    = requests.filter((r) =>
+    r.status === "Accepted" || r.status === "In Progress"
+  ).length;
+  const completedRequests = requests.filter((r) => r.status === "Completed").length;
+  const emergencyContactsCount = contacts.length;
+
+  return (
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* 1. Sticky Header */}
+      <TopNavbar user={resolvedUser} />
+
+      {/* Main Content Area */}
+      <main
+        id="main-content"
+        className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 lg:pb-8 space-y-6 bg-slate-50/50"
+      >
+        {/* 2. Welcome Card */}
+        <WelcomeCard user={resolvedUser} />
+
+        {/* 3. SOS Card */}
+        <EmergencySOS />
+
+        {/* 4. Stats Section */}
+        <StatsSection
+          totalRequests={totalRequests}
+          activeRequests={activeRequests}
+          pendingRequests={pendingRequests}
+          completedRequests={completedRequests}
+          emergencyContactsCount={emergencyContactsCount}
+        />
+
+        {/* 5. Recent Requests */}
+        <RecentRequests requests={requests.slice(0, 5)} />
+
+        {/* 6. Nearby Help */}
+        <NearbyHelp />
+
+        {/* 7. Emergency Contacts */}
+        <EmergencyContacts contacts={contacts} />
+
+        {/* 8. Health Tips */}
+        <HealthTips />
+      </main>
+    </div>
+  );
+}

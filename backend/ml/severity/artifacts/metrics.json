@@ -1,0 +1,11 @@
+{
+  "logistic_regression": {
+    "macro_f1": 1.0
+  },
+  "linear_svc": {
+    "macro_f1": 1.0
+  },
+  "random_forest": {
+    "macro_f1": 1.0
+  }
+}

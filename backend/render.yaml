@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: medicare-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      if [ -f requirements-ml.txt ]; then pip install -r requirements-ml.txt; fi
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: PYTHON_VERSION
+        value: "3.13"
+      # The remaining secrets are set manually in the Render dashboard.
+      # Never commit real values here.
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: BACKEND_CORS_ORIGINS
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: AI_ASSISTANT_ENABLED
+        value: "true"
+      - key: GEOAPIFY_API_KEY
+        sync: false
+      - key: GEOAPIFY_ENABLED
+        value: "true"
+      - key: HF_PROVIDER_ENABLED
+        value: "false"
+      - key: ML_SEVERITY_ENABLED
+        value: "true"
+      - key: ML_SEVERITY_CONFIDENCE_THRESHOLD
+        value: "0.65"

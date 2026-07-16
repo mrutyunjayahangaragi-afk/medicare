@@ -1,0 +1,15 @@
+{
+  "LogisticRegression": {
+    "macro_f1": 0.9609914456612569,
+    "critical_recall": 0.9795918367346939
+  },
+  "LinearSVC": {
+    "macro_f1": 0.9950862318142403,
+    "critical_recall": 0.9795918367346939
+  },
+  "RandomForest": {
+    "macro_f1": 1.0,
+    "critical_recall": 1.0
+  },
+  "selected_model": "RandomForest"
+}

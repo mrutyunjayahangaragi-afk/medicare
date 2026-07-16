@@ -1,0 +1,26 @@
+{
+  "model_version": "severity-v1",
+  "safety_rules_version": "safety-v1",
+  "tfidf_max_features": 5000,
+  "ngram_range": [1, 2],
+  "test_size": 0.2,
+  "random_state": 42,
+  "confidence_threshold": 0.65,
+  "models_to_evaluate": ["logistic_regression", "linear_svc", "random_forest"],
+  "labels": ["low", "medium", "high", "critical"],
+  "description_column": "description",
+  "label_column": "severity",
+  "categorical_columns": ["emergency_type", "age_group", "bleeding_level", "burn_level"],
+  "boolean_columns": [
+    "conscious",
+    "breathing_difficulty",
+    "severe_breathing_difficulty",
+    "chest_pain",
+    "seizure",
+    "stroke_signs",
+    "allergic_reaction",
+    "pregnancy_emergency",
+    "major_accident",
+    "violence_risk"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "model_version": "severity-v1",
+  "selected_model": "logistic_regression",
+  "macro_f1": 1.0,
+  "labels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
+  "safety_rules_version": "safety-v1",
+  "confidence_threshold": 0.65,
+  "training_rows": 960,
+  "test_rows": 240,
+  "feature_columns": [
+    "description",
+    "emergency_type",
+    "age_group",
+    "bleeding_level",
+    "burn_level",
+    "conscious",
+    "breathing_difficulty",
+    "severe_breathing_difficulty",
+    "chest_pain",
+    "seizure",
+    "stroke_signs",
+    "allergic_reaction",
+    "pregnancy_emergency",
+    "major_accident",
+    "violence_risk"
+  ],
+  "label_column": "severity",
+  "disclaimer": "This model was trained on SYNTHETIC data. Predictions are suggestions only and carry no clinical validity.",
+  "synthetic_data": true
+}
