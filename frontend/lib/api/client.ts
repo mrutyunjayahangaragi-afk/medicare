@@ -321,6 +321,148 @@ export async function deleteAssistantConversation(conversationId: string): Promi
   });
 }
 
+// ── Assistant SSE Streaming ────────────────────────────────────────────────
+
+export interface AssistantStreamMeta {
+  conversation_id?: string;
+  message_id?: string;
+  urgency?: "routine" | "moderate" | "urgent" | "critical";
+  intent?: string;
+  show_sos?: boolean;
+  suggested_route?: string | null;
+  actions?: string[];
+}
+
+export interface AssistantStreamCallbacks {
+  onToken: (text: string) => void;
+  onMeta: (meta: AssistantStreamMeta) => void;
+  onDone: () => void;
+  onError: (message: string) => void;
+}
+
+/**
+ * POST /api/v1/assistant/chat/stream
+ *
+ * Fetch-based SSE connection to the Gemini-backed streaming endpoint.
+ * Returns an AbortController so the caller can cancel mid-stream
+ * (e.g. on component unmount).
+ *
+ * Events:
+ *   event: token    data: {"text":"..."}
+ *   event: metadata data: {"conversation_id":"...","urgency":"...",...}
+ *   event: done     data: {}
+ *   event: error    data: {"message":"..."}
+ */
+export function streamAssistantMessage(
+  payload: {
+    message: string;
+    conversation_id?: string | null;
+    request_id?: string | null;
+    include_request_context?: boolean;
+    language?: string | null;
+  },
+  callbacks: AssistantStreamCallbacks
+): AbortController {
+  const controller = new AbortController();
+
+  (async () => {
+    const supabase = createClient();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const token = session?.access_token ?? null;
+
+    const apiUrl = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
+
+    let response: Response;
+    try {
+      response = await fetch(`${apiUrl}/api/v1/assistant/chat/stream`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "text/event-stream",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+    } catch (err: any) {
+      if (err?.name !== "AbortError") {
+        callbacks.onError("AI Assistant is temporarily unavailable.");
+      }
+      return;
+    }
+
+    if (!response.ok) {
+      callbacks.onError("AI Assistant is temporarily unavailable.");
+      return;
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      callbacks.onError("Streaming not supported by this browser.");
+      return;
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = "";
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        // SSE frames are separated by double newlines
+        const frames = buffer.split("\n\n");
+        buffer = frames.pop() ?? "";
+
+        for (const frame of frames) {
+          if (!frame.trim()) continue;
+          const lines = frame.split("\n");
+          let eventType = "message";
+          let dataStr = "";
+
+          for (const line of lines) {
+            if (line.startsWith("event:")) {
+              eventType = line.slice(6).trim();
+            } else if (line.startsWith("data:")) {
+              dataStr = line.slice(5).trim();
+            }
+          }
+
+          if (!dataStr) continue;
+
+          try {
+            const parsed = JSON.parse(dataStr);
+            if (eventType === "token") {
+              callbacks.onToken(parsed.text ?? "");
+            } else if (eventType === "metadata") {
+              callbacks.onMeta(parsed as AssistantStreamMeta);
+            } else if (eventType === "done") {
+              callbacks.onDone();
+              return;
+            } else if (eventType === "error") {
+              callbacks.onError(parsed.message ?? "An error occurred.");
+              return;
+            }
+          } catch {
+            // Malformed SSE data — skip this frame
+          }
+        }
+      }
+    } catch (err: any) {
+      if (err?.name !== "AbortError") {
+        callbacks.onError("Connection to assistant was interrupted.");
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  })();
+
+  return controller;
+}
+
 // ── Admin Applications ─────────────────────────────────────────────────────
 
 export interface AdminApplication {

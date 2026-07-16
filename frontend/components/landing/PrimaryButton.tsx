@@ -1,23 +1,21 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-interface ButtonProps {
-  onClick?: () => void;
+interface ButtonProps extends HTMLMotionProps<"button"> {
   children: React.ReactNode;
   className?: string;
-  type?: "button" | "submit" | "reset";
 }
 
-export default function PrimaryButton({ onClick, children, className = "", type = "button" }: ButtonProps) {
+export default function PrimaryButton({ children, className = "", type = "button", ...rest }: ButtonProps) {
   return (
     <motion.button
       type={type}
-      onClick={onClick}
       suppressHydrationWarning
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`btn-primary ${className}`}
+      {...rest}
     >
       {children}
     </motion.button>

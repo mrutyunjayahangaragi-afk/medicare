@@ -248,6 +248,10 @@ export default function EmergencyRequestForm({
     setSubmitting(false);
     toast("Emergency Request Submitted Successfully!", "success");
     router.push(`/dashboard/requests/${data.id}`);
+    // Refresh Next.js Server Component cache so the dashboard stats and
+    // recent-requests list reflect the newly created request when the user
+    // navigates back to /dashboard.
+    router.refresh();
   };
 
   const preGeneratedId = useRef(crypto.randomUUID()).current;

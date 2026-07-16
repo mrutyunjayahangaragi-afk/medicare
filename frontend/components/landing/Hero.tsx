@@ -1,23 +1,39 @@
 "use client";
 
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { useState } from "react";
-import { Bell, PlayCircle, Shield, Brain, ShieldCheck, ShieldAlert } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Bell, PlayCircle, Shield, Brain, ShieldCheck } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
 
 export default function Hero() {
-  const [alertMsg, setAlertMsg] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const router = useRouter();
 
-  const showAlert = (msg: string) => {
-    setAlertMsg(msg);
-    setTimeout(() => setAlertMsg(null), 3500);
+  // Check auth state once on mount — no polling, no sensitive data stored
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setIsLoggedIn(!!user);
+    });
+  }, []);
+
+  const handleRequestHelp = () => {
+    if (isLoggedIn) {
+      router.push("/dashboard/emergency");
+    } else {
+      router.push("/login?next=/dashboard/emergency");
+    }
   };
 
-  const scrollToFeatures = () => {
-    const el = document.getElementById("features");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+  const scrollToHowItWorks = () => {
+    const el = document.getElementById("how-it-works");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   const transitionBase = shouldReduceMotion ? { duration: 0 } : { duration: 0.35, ease: "easeOut" as const };
@@ -37,27 +53,11 @@ export default function Hero() {
       id="home"
       className="relative min-h-screen flex items-center pt-28 pb-16 overflow-hidden bg-gradient-to-b from-white via-red-50/10 to-slate-50 border-b border-slate-100"
     >
-      {/* Background decorations */}
+      {/* Background decorations — pointer-events-none ensures they never block clicks */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden select-none">
         <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-red-500/5 blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/5 blur-[100px]" />
       </div>
-
-      {/* Alert toast */}
-      <AnimatePresence>
-        {alertMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -60, x: "-50%" }}
-            animate={{ opacity: 1, y: 0, x: "-50%" }}
-            exit={{ opacity: 0, y: -60, x: "-50%" }}
-            transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.25, ease: "easeOut" }}
-            className="fixed top-6 left-1/2 z-50 bg-slate-900 border border-slate-800 text-white text-sm px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 max-w-sm w-[90vw] text-center"
-          >
-            <ShieldAlert className="w-5 h-5 text-red-500 flex-shrink-0 animate-pulse" />
-            <span className="font-semibold text-slate-200">{alertMsg}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -84,17 +84,19 @@ export default function Hero() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 relative z-10">
               <PrimaryButton
-                onClick={() => showAlert("Emergency reporting will be added after authentication.")}
+                onClick={handleRequestHelp}
                 className="px-7 py-4"
+                aria-label={isLoggedIn ? "Go to emergency dashboard" : "Log in to request help"}
               >
                 <Bell className="w-4 h-4 fill-white animate-bounce" />
                 Request Help
               </PrimaryButton>
               <SecondaryButton
-                onClick={scrollToFeatures}
+                onClick={scrollToHowItWorks}
                 className="px-7 py-4"
+                aria-label="Scroll to How It Works section"
               >
                 <PlayCircle className="w-4 h-4 text-slate-400" />
                 Learn More

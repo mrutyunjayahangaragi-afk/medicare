@@ -25,36 +25,31 @@ class Settings(BaseSettings):
     # ── API routing ─────────────────────────────────────────────────────────
     api_v1_prefix: str = Field(default="/api/v1")
 
-    # ── CORS — store as a JSON-encoded list or comma-separated string ────────
-    # Example .env value:
-    #   BACKEND_CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000"]
-    # Fallback list used during development if the variable is not set.
+    # ── CORS ────────────────────────────────────────────────────────────────
     backend_cors_origins: list[str] = Field(
         default=["http://localhost:3000", "http://127.0.0.1:3000"]
     )
-
-    # Kept for backward compatibility and health-check display
     frontend_url: str = Field(default="http://localhost:3000")
 
-    # ── Supabase (required — missing values fail fast at startup) ───────────
+    # ── Supabase (required) ─────────────────────────────────────────────────
     supabase_url: str = Field(...)
     supabase_anon_key: str = Field(...)
     supabase_service_role_key: str = Field(...)
 
-    # ── AI / Gemini ─────────────────────────────────────────────────────────
+    # ── Gemini AI ───────────────────────────────────────────────────────────
     gemini_api_key: str | None = Field(default=None)
     gemini_model: str = Field(default="gemini-2.5-flash")
     ai_provider: str = Field(default="gemini")
     ai_request_timeout_seconds: int = Field(default=30)
-    ai_max_input_characters: int = Field(default=4000)
-    ai_max_history_messages: int = Field(default=12)
+    ai_max_input_characters: int = Field(default=2000)
+    ai_max_history_messages: int = Field(default=10)
     ai_temperature: float = Field(default=0.2)
     ai_assistant_enabled: bool = Field(default=True)
     ai_rate_limit_per_minute: int = Field(default=10)
     ai_rate_limit_per_day: int = Field(default=100)
     ai_conversation_retention_days: int = Field(default=30)
 
-    # ── Hugging Face (Optional) ─────────────────────────────────────────────
+    # ── Hugging Face (optional, disabled by default) ─────────────────────────
     hf_token: str | None = Field(default=None)
     hf_chat_model: str | None = Field(default=None)
     hf_intent_model: str | None = Field(default=None)
@@ -73,7 +68,6 @@ class Settings(BaseSettings):
     geoapify_api_key: str | None = Field(default=None)
     geoapify_timeout_seconds: int = Field(default=10)
 
-
     # ── Pydantic-settings config ─────────────────────────────────────────────
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -87,15 +81,13 @@ class Settings(BaseSettings):
     @field_validator("backend_cors_origins", mode="before")
     @classmethod
     def _parse_cors_origins(cls, value: object) -> list[str]:
-        """Accept either a JSON array string or a plain list."""
         if isinstance(value, list):
             return value
         if isinstance(value, str):
             stripped = value.strip()
             if stripped.startswith("["):
                 return json.loads(stripped)
-            # Comma-separated fallback: "http://localhost:3000,http://127.0.0.1:3000"
-            return [origin.strip() for origin in stripped.split(",") if origin.strip()]
+            return [o.strip() for o in stripped.split(",") if o.strip()]
         return list(value)  # type: ignore[arg-type]
 
     @field_validator("supabase_url", "supabase_anon_key", "supabase_service_role_key")
@@ -107,14 +99,14 @@ class Settings(BaseSettings):
                 "Check your backend/.env file."
             )
         return value.strip()
-    
+
     @field_validator("ai_temperature")
     @classmethod
     def _validate_temperature(cls, v: float) -> float:
         if not (0.0 <= v <= 2.0):
             raise ValueError("ai_temperature must be between 0.0 and 2.0")
         return v
-        
+
     @field_validator("ai_max_input_characters", "ai_max_history_messages", "ai_request_timeout_seconds")
     @classmethod
     def _validate_positive_limits(cls, v: int, info: object) -> int:
@@ -125,7 +117,6 @@ class Settings(BaseSettings):
     @field_validator("geoapify_api_key")
     @classmethod
     def _validate_geoapify_key(cls, v: str | None, info: object) -> str | None:
-        """API key is required when Geoapify is enabled."""
         if v is not None and not v.strip():
             raise ValueError("geoapify_api_key must not be empty when provided")
         return v.strip() if v else None
@@ -146,6 +137,7 @@ class Settings(BaseSettings):
         safe_dict["hf_token"] = "***HIDDEN***" if safe_dict.get("hf_token") else None
         safe_dict["geoapify_api_key"] = "***HIDDEN***" if safe_dict.get("geoapify_api_key") else None
         return f"Settings({safe_dict})"
+
 
 @lru_cache
 def get_settings() -> Settings:

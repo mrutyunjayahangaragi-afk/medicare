@@ -119,7 +119,11 @@ export async function createEmergencyRequest(
   return { data: data as EmergencyRequest, error: null };
 }
 
-/** Fetch current user's requests ordered by newest first. */
+/** Fetch current user's requests ordered by newest first.
+ *
+ * Throws on error so callers can show a proper error state.
+ * Never returns a stale empty array when the real cause is a fetch failure.
+ */
 export async function fetchMyEmergencyRequests(): Promise<EmergencyRequest[]> {
   const supabase = createClient();
   const { data, error } = await supabase
@@ -128,8 +132,9 @@ export async function fetchMyEmergencyRequests(): Promise<EmergencyRequest[]> {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("[emergency] fetch list:", error.code);
-    return [];
+    // Rethrow so RequestsPage.loadRequests() catch block sets fetchError
+    console.error("[emergency] fetch list error code:", error.code);
+    throw new Error(error.message || "Failed to fetch emergency requests");
   }
   return (data ?? []) as EmergencyRequest[];
 }
