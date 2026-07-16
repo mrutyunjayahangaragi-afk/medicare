@@ -1,0 +1,34 @@
+# ── Workspace-level .gitignore ──────────────────────────────────────────────
+# Per-project .gitignore files in frontend/ and backend/ handle project-
+# specific exclusions. This file covers workspace-root artefacts only.
+
+# Python virtual environment at the workspace root
+.venv/
+venv/
+env/
+
+# Editor configuration
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Kiro spec working files — specs are fine but the .kiro folder may contain
+# local IDE state. Exclude the settings/local cache, keep specs and steering.
+.kiro/settings/
+
+# Any accidentally created root-level env files
+.env
+.env.local
+.env.*
+!.env.example
+
+# Root-level requirements are workspace deps, not secrets, so track them
+# requirements.txt  ← tracked
+
+# Log files
+*.log
