@@ -59,7 +59,7 @@ Set in: Render → Service → Environment
 
 | Variable | Value | Notes |
 |---|---|---|
-| `GEMINI_API_KEY` | Google AI Studio | Required for AI assistant |
+| `GEMINI_API_KEY` | Google AI Studio | Required. Must start with `AIza`. Get from [aistudio.google.com](https://aistudio.google.com/app/apikey) |
 | `GEMINI_MODEL` | `gemini-2.5-flash` | Tested and confirmed model name |
 | `AI_PROVIDER` | `gemini` | |
 | `AI_ASSISTANT_ENABLED` | `true` | |
@@ -95,3 +95,39 @@ Set in: Render → Service → Environment
 | `GEOAPIFY_ENABLED` | `true` | Enables nearby services endpoint |
 | `GEOAPIFY_API_KEY` | Geoapify developer dashboard | **Backend-only** — never expose to frontend |
 | `GEOAPIFY_TIMEOUT_SECONDS` | `10` | |
+
+---
+
+## Critical Production Checklist
+
+### Render Dashboard (set these manually under Service → Environment)
+
+```
+SUPABASE_URL=https://qcwhylpizgilgfsjexxa.supabase.co
+SUPABASE_ANON_KEY=<anon key from Supabase dashboard>
+SUPABASE_SERVICE_ROLE_KEY=<service role key from Supabase dashboard>
+GEMINI_API_KEY=<valid key starting with AIza from aistudio.google.com>
+GEOAPIFY_API_KEY=<key from developer.geoapify.com>
+BACKEND_CORS_ORIGINS=["https://medicare-nine-lilac.vercel.app","http://localhost:3000"]
+FRONTEND_URL=https://medicare-nine-lilac.vercel.app
+```
+
+### Vercel Dashboard (set under Project → Settings → Environment Variables → Production)
+
+```
+NEXT_PUBLIC_SUPABASE_URL=https://qcwhylpizgilgfsjexxa.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+NEXT_PUBLIC_SITE_URL=https://medicare-nine-lilac.vercel.app
+NEXT_PUBLIC_API_URL=https://medicare-backend-u3k3.onrender.com
+```
+
+### Common Mistakes That Break Production
+
+| Symptom | Root cause | Fix |
+|---|---|---|
+| AI Assistant "temporarily unavailable" | `GEMINI_API_KEY` not set or invalid on Render | Set a valid `AIza...` key |
+| Nearby services blank / 503 | `GEOAPIFY_API_KEY` not set on Render | Set the API key in Render dashboard |
+| CORS errors in browser | `BACKEND_CORS_ORIGINS` missing Vercel URL | Set `["https://medicare-nine-lilac.vercel.app"]` on Render |
+| Frontend calls localhost in prod | `NEXT_PUBLIC_API_URL` not set on Vercel | Add the Render backend URL to Vercel env vars |
+| Supabase client init fails | Leading space in `NEXT_PUBLIC_SUPABASE_URL` | Ensure no whitespace around the value |
+| Notifications never appear | Demo seed not run | Run `python scripts/seed_notifications.py` from backend/ |

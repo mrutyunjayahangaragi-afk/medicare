@@ -43,3 +43,11 @@ services:
         value: "true"
       - key: ML_SEVERITY_CONFIDENCE_THRESHOLD
         value: "0.65"
+      - key: AI_REQUEST_TIMEOUT_SECONDS
+        value: "30"
+      - key: AI_MAX_INPUT_CHARACTERS
+        value: "4000"
+      - key: AI_MAX_HISTORY_MESSAGES
+        value: "12"
+      - key: GEOAPIFY_TIMEOUT_SECONDS
+        value: "10"
