@@ -194,6 +194,7 @@ export default function EmergencyRequestForm({
 
   const onValid = async (formData: FormSchema) => {
     if (!validateExtra()) return;
+    setSubmitError(null);   // clear any previous submission error
     setShowConfirm(true);
     (window as { _emergencyFormData?: FormSchema })._emergencyFormData = formData;
   };
@@ -201,31 +202,24 @@ export default function EmergencyRequestForm({
   const handleConfirm = async () => {
     const formData = (window as { _emergencyFormData?: FormSchema })._emergencyFormData;
     if (!formData || !emergencyType || !severity) return;
+    if (submitting) return; // double-click guard
 
     setSubmitting(true);
     setShowConfirm(false);
+    setSubmitError(null);
 
-    const { createClient } = await import("@/lib/supabase/client");
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setSubmitting(false);
-      toast("Session expired. Please log in again.", "error");
-      router.push("/login");
-      return;
-    }
-
-    const requestId = crypto.randomUUID();
-    let finalEvidencePath = evidencePath;
+    // Guard: evidence still uploading
     if (evidencePreview?.startsWith("blob:") && !evidencePath) {
       toast("Evidence upload is still in progress. Please wait.", "warning");
       setSubmitting(false);
       return;
     }
 
+    // Use preGeneratedId as the request ID — this is the same UUID used as
+    // the evidence upload folder, so the storage path and DB row stay consistent.
     const coords = locationState.status === "captured" ? locationState : null;
     const { data, error } = await createEmergencyRequest({
-      requestId,
+      requestId: preGeneratedId,
       userId,
       emergency_type: emergencyType,
       severity,
@@ -235,13 +229,16 @@ export default function EmergencyRequestForm({
       longitude: coords?.longitude ?? null,
       location_accuracy: coords?.accuracy ?? null,
       manual_address: manualAddress.trim() || null,
-      evidence_path: finalEvidencePath,
+      evidence_path: evidencePath,
     });
 
     if (error || !data) {
-      if (finalEvidencePath) await removeEvidence(finalEvidencePath);
+      const msg = error ?? "Submission failed. Please try again.";
+      setSubmitError(msg);
+      toast(msg, "error");
+      // Clean up evidence if upload happened but insert failed
+      if (evidencePath) await removeEvidence(evidencePath);
       setSubmitting(false);
-      toast(error ?? "Submission failed. Please try again.", "error");
       return;
     }
 
@@ -269,14 +266,16 @@ export default function EmergencyRequestForm({
       }
     } catch { /* non-fatal — SOS request already saved */ }
 
-    router.push(`/dashboard/requests/${data.id}`);
-    // Refresh Next.js Server Component cache so the dashboard stats and
-    // recent-requests list reflect the newly created request when the user
-    // navigates back to /dashboard.
+    // Refresh the Server Component cache before navigating so the dashboard
+    // stats reflect the new request immediately when the user navigates back.
     router.refresh();
+    router.push(`/dashboard/requests/${data.id}`);
   };
 
   const preGeneratedId = useRef(crypto.randomUUID()).current;
+
+  // ── Form-level submission error (shown above the submit button) ───────────
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   return (
     <>
@@ -559,6 +558,17 @@ export default function EmergencyRequestForm({
               <p className="mt-1 text-xs font-medium text-[#E53935] ml-7" role="alert">{errors.confirmed.message}</p>
             )}
           </div>
+
+          {/* Form-level submission error */}
+          {submitError && (
+            <div
+              role="alert"
+              className="flex items-start gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl"
+            >
+              <AlertCircle className="w-4 h-4 text-[#E53935] flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="text-xs font-medium text-red-700">{submitError}</p>
+            </div>
+          )}
 
           {/* SOS submit */}
           <motion.button

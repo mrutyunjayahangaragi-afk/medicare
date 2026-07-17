@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   title: "User Dashboard — Medicare",
 };
 
+// Always fetch fresh data — never serve a stale server-component render
+export const revalidate = 0;
+export const dynamic = "force-dynamic";
+
 function mapStatus(status: string): EmergencyRequest["status"] {
   switch (status) {
     case "pending":

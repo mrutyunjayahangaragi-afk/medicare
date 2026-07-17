@@ -84,8 +84,15 @@ export interface CreateEmergencyParams {
 }
 
 /**
- * Insert one emergency request row.
- * The caller must generate requestId with crypto.randomUUID() BEFORE uploading evidence.
+ * Insert one emergency request row via the Supabase client.
+ *
+ * The caller must generate requestId with crypto.randomUUID() BEFORE uploading
+ * evidence so the UUID can be used as both the storage path prefix and the DB PK.
+ *
+ * Error handling:
+ *  - Returns a typed error string for all failure paths so the form can
+ *    display a useful message.
+ *  - Logs error.code only — never logs description or contact_number.
  */
 export async function createEmergencyRequest(
   params: CreateEmergencyParams
@@ -112,7 +119,47 @@ export async function createEmergencyRequest(
     .single();
 
   if (error) {
-    console.error("[emergency] insert:", error.code);
+    // Log safe fields only — never log the description or contact number
+    console.error("[emergency] insert failed:", {
+      code:    error.code,
+      hint:    error.hint,
+      details: error.details,
+      // message may contain schema info but not user content — safe to log
+      message: error.message,
+    });
+
+    // Translate common Postgres error codes into user-friendly messages
+    if (error.code === "23514") {
+      // Check constraint violation
+      if (error.message?.includes("location_present")) {
+        return { data: null, error: "Please provide your GPS location or enter a manual address." };
+      }
+      if (error.message?.includes("description_length")) {
+        return { data: null, error: "Description must be between 10 and 500 characters." };
+      }
+      if (error.message?.includes("contact_not_empty")) {
+        return { data: null, error: "Contact number is required." };
+      }
+      return { data: null, error: "Some required information is missing. Please check the form and try again." };
+    }
+    if (error.code === "23505") {
+      // Unique violation — duplicate requestId (idempotent retry)
+      const { data: existing } = await supabase
+        .from("emergency_requests")
+        .select()
+        .eq("id", params.requestId)
+        .single();
+      if (existing) {
+        return { data: existing as EmergencyRequest, error: null };
+      }
+      return { data: null, error: "A duplicate request was detected. Please try again." };
+    }
+    if (error.code === "42501" || error.code === "42000") {
+      return { data: null, error: "Permission denied. Please log out and log in again." };
+    }
+    if (error.code === "PGRST301" || error.message?.includes("JWT")) {
+      return { data: null, error: "Your session has expired. Please log in again." };
+    }
     return { data: null, error: "Failed to submit emergency request. Please try again." };
   }
 

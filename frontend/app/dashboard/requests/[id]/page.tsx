@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, AlertCircle } from "lucide-react";
@@ -9,7 +9,8 @@ import RecommendationPanel from "@/components/recommendation/RecommendationPanel
 import { fetchEmergencyById } from "@/lib/emergency";
 import type { EmergencyRequest } from "@/types/emergency";
 
-export default function RequestDetailPage({ params }: { params: { id: string } }) {
+export default function RequestDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const [request, setRequest] = useState<EmergencyRequest | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +20,7 @@ export default function RequestDetailPage({ params }: { params: { id: string } }
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchEmergencyById(params.id);
+      const data = await fetchEmergencyById(id);
       if (!data) {
         setError("Request not found");
         return;
@@ -35,7 +36,7 @@ export default function RequestDetailPage({ params }: { params: { id: string } }
 
   useEffect(() => {
     loadRequest();
-  }, [params.id]);
+  }, [id]);
 
   const handleCancel = () => {
     // Reload the request to get updated status

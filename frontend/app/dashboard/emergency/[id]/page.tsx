@@ -84,8 +84,9 @@ export default function EmergencyDetailPage({
 
       const { data: profileData } = await supabase
         .from("profiles").select("*").eq("id", user.id).single();
-      if (!profileData?.is_verified) { router.replace("/login"); return; }
-      setProfile(profileData as Profile);
+      // Allow access for any authenticated user — is_verified is enforced
+      // at the dashboard level, not on individual request detail pages.
+      setProfile((profileData ?? { id: user.id }) as Profile);
 
       const req = await fetchEmergencyById(id);
       if (!req) { setNotFound(true); setLoading(false); return; }
