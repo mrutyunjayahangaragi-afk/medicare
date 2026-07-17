@@ -47,14 +47,19 @@ export default function AvailabilityToggle({
     setIsUpdating(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.rpc("update_responder_availability", {
+      const { error: rpcError } = await supabase.rpc("update_responder_availability", {
         new_status: newStatus,
       });
 
-      if (error) throw error;
+      if (rpcError) {
+        console.error("Failed to update availability — RPC error:", rpcError.message, rpcError.details, rpcError.hint);
+        alert(`Failed to update availability: ${rpcError.message || "Please try again."}`);
+        return;
+      }
       onStatusChange(newStatus);
-    } catch (error) {
-      console.error("Failed to update availability:", error);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("Failed to update availability:", msg);
       alert("Failed to update availability. Please try again.");
     } finally {
       setIsUpdating(false);

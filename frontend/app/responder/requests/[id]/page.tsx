@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, MapPin, Phone, Calendar, FileText, AlertCircle } from "lucide-react";
@@ -11,7 +11,10 @@ import { createClient } from "@/lib/supabase/client";
 import type { EmergencyRequest } from "@/types/emergency";
 import { EMERGENCY_TYPES, SEVERITY_LEVELS } from "@/types/emergency";
 
-export default function ResponderRequestDetailPage({ params }: { params: { id: string } }) {
+export default function ResponderRequestDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Next.js 16: params is a Promise — unwrap it with React.use()
+  const { id } = use(params);
+
   const router = useRouter();
   const [request, setRequest] = useState<EmergencyRequest | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,13 +26,13 @@ export default function ResponderRequestDetailPage({ params }: { params: { id: s
     setError(null);
     try {
       const supabase = createClient();
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from("emergency_requests")
         .select("*")
-        .eq("id", params.id)
+        .eq("id", id)
         .single();
 
-      if (error) throw error;
+      if (fetchError) throw fetchError;
 
       // Check if request is accessible (unassigned pending or assigned to current user)
       const { data: { user } } = await supabase.auth.getUser();
@@ -38,7 +41,7 @@ export default function ResponderRequestDetailPage({ params }: { params: { id: s
         return;
       }
 
-      const isAccessible = 
+      const isAccessible =
         (data.status === "pending" && !data.assigned_responder_id) ||
         data.assigned_responder_id === user.id;
 
@@ -48,8 +51,9 @@ export default function ResponderRequestDetailPage({ params }: { params: { id: s
       }
 
       setRequest(data);
-    } catch (err) {
-      console.error("Failed to load request:", err);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("Failed to load request:", msg);
       setError("Failed to load request details");
     } finally {
       setIsLoading(false);
@@ -58,21 +62,22 @@ export default function ResponderRequestDetailPage({ params }: { params: { id: s
 
   useEffect(() => {
     loadRequest();
-  }, [params.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const handleStartResponse = async () => {
     setIsUpdating(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.rpc("update_emergency_request_status", {
-        request_id: params.id,
+      const { error: rpcError } = await supabase.rpc("update_emergency_request_status", {
+        request_id: id,
         next_status: "in_progress",
       });
-
-      if (error) throw error;
+      if (rpcError) throw rpcError;
       await loadRequest();
-    } catch (error) {
-      console.error("Failed to start response:", error);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("Failed to start response:", msg);
       alert("Failed to update request status. Please try again.");
     } finally {
       setIsUpdating(false);
@@ -83,15 +88,15 @@ export default function ResponderRequestDetailPage({ params }: { params: { id: s
     setIsUpdating(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.rpc("update_emergency_request_status", {
-        request_id: params.id,
+      const { error: rpcError } = await supabase.rpc("update_emergency_request_status", {
+        request_id: id,
         next_status: "completed",
       });
-
-      if (error) throw error;
+      if (rpcError) throw rpcError;
       await loadRequest();
-    } catch (error) {
-      console.error("Failed to complete response:", error);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("Failed to complete response:", msg);
       alert("Failed to update request status. Please try again.");
     } finally {
       setIsUpdating(false);
@@ -102,15 +107,15 @@ export default function ResponderRequestDetailPage({ params }: { params: { id: s
     setIsUpdating(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.rpc("update_emergency_request_status", {
-        request_id: params.id,
+      const { error: rpcError } = await supabase.rpc("update_emergency_request_status", {
+        request_id: id,
         next_status: "cancelled",
       });
-
-      if (error) throw error;
+      if (rpcError) throw rpcError;
       await loadRequest();
-    } catch (error) {
-      console.error("Failed to cancel response:", error);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("Failed to cancel response:", msg);
       alert("Failed to cancel request. Please try again.");
     } finally {
       setIsUpdating(false);

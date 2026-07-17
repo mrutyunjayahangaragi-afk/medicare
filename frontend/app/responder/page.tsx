@@ -109,22 +109,31 @@ export default function ResponderDashboard() {
     setIsAccepting(requestId);
     try {
       const supabase = createClient();
-      const { data, error } = await supabase.rpc("accept_emergency_request", {
+      const { data, error: rpcError } = await supabase.rpc("accept_emergency_request", {
         request_id: requestId,
       });
 
-      if (error) throw error;
+      if (rpcError) {
+        // Log the full error details so we can see the actual DB message
+        console.error("Failed to accept request — RPC error:", rpcError.message, rpcError.details, rpcError.hint);
+        alert(`Failed to accept request: ${rpcError.message || "It may have been assigned to another responder."}`);
+        return;
+      }
 
       // Update availability to busy
-      await supabase.rpc("update_responder_availability", {
+      const { error: availError } = await supabase.rpc("update_responder_availability", {
         new_status: "busy",
       });
+      if (availError) {
+        console.error("Failed to update availability after accepting:", availError.message);
+      }
 
       // Reload dashboard
       await loadDashboardData();
-    } catch (error) {
-      console.error("Failed to accept request:", error);
-      alert("Failed to accept request. It may have been assigned to another responder.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      console.error("Failed to accept request:", msg);
+      alert("Failed to accept request. Please try again.");
     } finally {
       setIsAccepting(null);
     }
