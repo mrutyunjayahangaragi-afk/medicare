@@ -18,6 +18,8 @@ export default async function AdminDashboardPage() {
     { count: totalRequests },
     { count: activeEmergencies },
     { count: pendingApplications },
+    { count: approvedApplications },
+    { count: rejectedApplications },
     { count: criticalRequests },
     { count: completedRequests },
     { count: suspendedAccounts },
@@ -28,6 +30,8 @@ export default async function AdminDashboardPage() {
     supabase.from("emergency_requests").select("*", { count: "exact", head: true }),
     supabase.from("emergency_requests").select("*", { count: "exact", head: true }).in("status", ["accepted", "in_progress", "arrived"]),
     supabase.from("portal_applications").select("*", { count: "exact", head: true }).eq("status", "pending"),
+    supabase.from("portal_applications").select("*", { count: "exact", head: true }).eq("status", "approved"),
+    supabase.from("portal_applications").select("*", { count: "exact", head: true }).eq("status", "rejected"),
     supabase.from("emergency_requests").select("*", { count: "exact", head: true }).eq("severity", "critical").not("status", "in", ["completed", "cancelled"]),
     supabase.from("emergency_requests").select("*", { count: "exact", head: true }).eq("status", "completed"),
     supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_status", "suspended"),
@@ -40,6 +44,8 @@ export default async function AdminDashboardPage() {
     totalRequests: totalRequests || 0,
     activeEmergencies: activeEmergencies || 0,
     pendingApplications: pendingApplications || 0,
+    approvedApplications: approvedApplications || 0,
+    rejectedApplications: rejectedApplications || 0,
     criticalRequests: criticalRequests || 0,
     completedRequests: completedRequests || 0,
     suspendedAccounts: suspendedAccounts || 0,
@@ -152,7 +158,29 @@ export default async function AdminDashboardPage() {
         <ActiveEmergencies emergencies={emergenciesWithProfiles || []} />
       </div>
 
-      {/* Additional Stats Row */}
+      {/* Applications Stats Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <AdminStatsCard
+          title="Applications: Pending"
+          value={stats.pendingApplications}
+          icon="file"
+          color="amber"
+        />
+        <AdminStatsCard
+          title="Applications: Approved"
+          value={stats.approvedApplications}
+          icon="check"
+          color="green"
+        />
+        <AdminStatsCard
+          title="Applications: Rejected"
+          value={stats.rejectedApplications}
+          icon="ban"
+          color="red"
+        />
+      </div>
+
+      {/* Requests Stats Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <AdminStatsCard
           title="Critical Requests"

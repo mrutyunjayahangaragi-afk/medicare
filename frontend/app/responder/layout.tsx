@@ -39,10 +39,13 @@ export default async function ResponderLayout({
       .select("status")
       .eq("user_id", user.id)
       .eq("application_type", "responder")
-      .single();
+      .maybeSingle();
 
     if (pendingApp?.status === "pending") {
       redirect("/application-pending");
+    }
+    if (pendingApp?.status === "rejected") {
+      redirect("/application-rejected");
     }
     redirect("/unauthorized");
   }

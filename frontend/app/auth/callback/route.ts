@@ -98,7 +98,7 @@ export async function GET(request: NextRequest) {
           return NextResponse.redirect(`${origin}/application-pending`);
         }
         if (existingApp.status === "rejected") {
-          return NextResponse.redirect(`${origin}/login?error=rejected`);
+          return NextResponse.redirect(`${origin}/application-rejected`);
         }
         if (existingApp.status === "suspended") {
           return NextResponse.redirect(`${origin}/login?error=suspended`);
@@ -126,7 +126,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (resolution.applicationStatus === "rejected") {
-      return NextResponse.redirect(`${origin}/login?error=rejected`);
+      return NextResponse.redirect(`${origin}/application-rejected`);
     }
 
     if (resolution.applicationStatus === "suspended") {
