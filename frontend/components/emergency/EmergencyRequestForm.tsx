@@ -247,6 +247,28 @@ export default function EmergencyRequestForm({
 
     setSubmitting(false);
     toast("Emergency Request Submitted Successfully!", "success");
+
+    // Stop any SOS alarm that may still be playing from the TopNavbar
+    try {
+      const { stopSOSAlarm } = await import("@/lib/audio/sos-alarm");
+      stopSOSAlarm();
+    } catch { /* non-fatal */ }
+
+    // Trigger SMS to primary emergency contact (fire-and-forget — never blocks SOS)
+    const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
+    try {
+      const { createClient: createSupabaseClient } = await import("@/lib/supabase/client");
+      const supabase2 = createSupabaseClient();
+      const { data: { session } } = await supabase2.auth.getSession();
+      const token = session?.access_token;
+      if (token && data?.id) {
+        fetch(`${API_URL}/api/v1/twilio/notify/${data.id}?send_sms=true&place_call=false`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        }).catch(() => {}); // truly fire-and-forget
+      }
+    } catch { /* non-fatal — SOS request already saved */ }
+
     router.push(`/dashboard/requests/${data.id}`);
     // Refresh Next.js Server Component cache so the dashboard stats and
     // recent-requests list reflect the newly created request when the user

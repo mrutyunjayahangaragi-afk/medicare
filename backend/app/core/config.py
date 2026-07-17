@@ -68,6 +68,16 @@ class Settings(BaseSettings):
     geoapify_api_key: str | None = Field(default=None)
     geoapify_timeout_seconds: int = Field(default=10)
 
+    # ── Twilio (optional, disabled by default) ──────────────────────────────
+    twilio_enabled: bool = Field(default=False)
+    twilio_account_sid: str | None = Field(default=None)
+    twilio_auth_token: str | None = Field(default=None)
+    twilio_phone_number: str | None = Field(default=None)
+    twilio_messaging_service_sid: str | None = Field(default=None)
+    twilio_status_callback_url: str | None = Field(default=None)
+    twilio_call_twiml_url: str | None = Field(default=None)
+    twilio_timeout_seconds: int = Field(default=15)
+
     # ── Pydantic-settings config ─────────────────────────────────────────────
     model_config = SettingsConfigDict(
         env_file=".env",

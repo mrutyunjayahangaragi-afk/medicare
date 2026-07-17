@@ -30,6 +30,7 @@ from app.api.v1.routes import recommendation
 from app.api.v1.routes import hospital
 from app.api.v1.routes import admin
 from app.api.v1.routes import nearby
+from app.api.v1.routes import twilio_routes
 
 api_router = APIRouter()
 
@@ -48,3 +49,4 @@ api_router.include_router(recommendation.router, prefix="/recommendations", tags
 api_router.include_router(hospital.router, prefix="/hospital", tags=["Hospital"])
 api_router.include_router(admin.router, prefix="/admin", tags=["Admin"])
 api_router.include_router(nearby.router, prefix="/nearby", tags=["Nearby Services"])
+api_router.include_router(twilio_routes.router, prefix="/twilio", tags=["Twilio"])

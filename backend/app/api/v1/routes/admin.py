@@ -674,14 +674,19 @@ def approve_application(
             "is_verified": True,
         }).select("id").execute()
 
-        # Create organization membership
+        # Create organization membership and update profile organization_id
         if organization_result.data:
+            org_id = organization_result.data[0]["id"]
             supabase.table("organization_members").insert({
-                "organization_id": organization_result.data[0]["id"],
+                "organization_id": org_id,
                 "user_id": application["user_id"],
                 "member_role": "owner",
                 "status": "approved",
             }).execute()
+            # Update profile with organization_id so portal redirect works immediately
+            supabase.table("profiles").update({
+                "organization_id": org_id,
+            }).eq("id", application["user_id"]).execute()
 
     elif application["application_type"] == "responder":
         supabase.table("profiles").update({
@@ -705,7 +710,7 @@ def approve_application(
         "recipient_id": application["user_id"],
         "title": "Application Approved",
         "message": f"Your {application['application_type']} application has been approved.",
-        "type": "success",
+        "type": "system",
     }).execute()
 
     # Return updated application
@@ -782,7 +787,7 @@ def reject_application(
             f"Your {application['application_type']} application has been rejected. "
             f"Reason: {reason}"
         ),
-        "type": "error",
+        "type": "system",
     }).execute()
 
     # Return updated application
