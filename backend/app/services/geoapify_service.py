@@ -7,6 +7,7 @@ Security: API key is only used server-side, never logged or forwarded to clients
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from math import asin, cos, radians, sin, sqrt
 from typing import Any
@@ -19,6 +20,12 @@ logger = logging.getLogger("medicare.services.geoapify")
 
 # ── Category mapping (valid Geoapify v2 category identifiers) ─────────────
 # Reference: https://apidocs.geoapify.com/docs/places/categories/
+#
+# IMPORTANT: Do NOT include healthcare.hospital in the ambulance map.
+# Geoapify has no real ambulance_station data in most regions.
+# Hospitals returned for the ambulance query are labelled "hospital" by
+# _infer_type and would be filtered out on the frontend.  The ambulance
+# fallback path (Supabase organisations) handles the real coverage gap.
 
 CATEGORY_MAP: dict[str, list[str]] = {
     "hospital": [
@@ -28,19 +35,18 @@ CATEGORY_MAP: dict[str, list[str]] = {
     "pharmacy": [
         "healthcare.pharmacy",
     ],
+    # Only real ambulance/emergency categories — no hospital fallback here.
+    # Geoapify returns 0 results for these in many regions; that is expected.
+    # The Supabase org fallback in the route layer covers the gap.
     "ambulance": [
-        "emergency",
-        "emergency.ambulance_station",
-        "healthcare.hospital",  # hospitals also provide ambulance service
-    ],
-    "all": [
-        "healthcare.hospital",
-        "healthcare.clinic_or_praxis",
-        "healthcare.pharmacy",
         "emergency",
         "emergency.ambulance_station",
     ],
 }
+
+# Sub-categories fetched when category="all".
+# Each is fetched independently so hospitals cannot crowd out pharmacies.
+_ALL_SUBCATEGORIES: list[str] = ["hospital", "pharmacy", "ambulance"]
 
 # How Geoapify category strings map back to our service type
 _CATEGORY_TO_TYPE: list[tuple[str, str]] = [
@@ -163,6 +169,53 @@ def _normalize_feature(
     }
 
 
+async def _fetch_single_category(
+    client: httpx.AsyncClient,
+    latitude: float,
+    longitude: float,
+    category: str,
+    radius_m: int,
+    limit: int,
+    api_key: str,
+) -> list[dict[str, Any]]:
+    """
+    Execute one Geoapify Places query for a single category.
+    Returns normalised records or empty list on error.
+    """
+    cats = CATEGORY_MAP.get(category, [])
+    if not cats:
+        return []
+
+    params: dict[str, str] = {
+        "filter": f"circle:{longitude},{latitude},{radius_m}",
+        "bias": f"proximity:{longitude},{latitude}",
+        "categories": ",".join(cats),
+        "limit": str(min(limit, 100)),
+        "apiKey": api_key,  # server-side only, never logged
+    }
+
+    resp = await client.get("https://api.geoapify.com/v2/places", params=params)
+
+    if resp.status_code == 401:
+        raise RuntimeError("Geoapify API key is invalid (401).")
+    if resp.status_code == 429:
+        raise RuntimeError("Geoapify rate limit exceeded (429).")
+    if resp.status_code == 400:
+        # Some categories return 400 when unsupported in a region — treat as empty
+        logger.debug("Geoapify 400 for category=%s (unsupported in this region)", category)
+        return []
+    if resp.status_code != 200:
+        raise RuntimeError(f"Geoapify returned HTTP {resp.status_code}.")
+
+    data = resp.json()
+    services: list[dict[str, Any]] = []
+    for feat in data.get("features", []):
+        normalized = _normalize_feature(feat, latitude, longitude, category)
+        if normalized is not None:
+            services.append(normalized)
+    return services
+
+
 async def fetch_nearby_services(
     latitude: float,
     longitude: float,
@@ -173,12 +226,16 @@ async def fetch_nearby_services(
     """
     Call Geoapify Places API and return normalised service records.
 
+    When category="all", each sub-category (hospital, pharmacy, ambulance) is
+    fetched in parallel with its own limit so hospitals cannot crowd out
+    pharmacies or ambulances.
+
     Args:
         latitude:   User latitude  (-90 … 90)
         longitude:  User longitude (-180 … 180)
         category:   "all" | "hospital" | "pharmacy" | "ambulance"
         radius_km:  Search radius in km (1 … 25)
-        limit:      Max results (1 … 100)
+        limit:      Max results per category (1 … 100)
 
     Returns:
         List of normalised service dicts sorted by distance_km.
@@ -191,49 +248,46 @@ async def fetch_nearby_services(
     if not settings.geoapify_enabled or not settings.geoapify_api_key:
         raise RuntimeError("Geoapify is not configured on this server.")
 
-    cats = CATEGORY_MAP.get(category, CATEGORY_MAP["all"])
     radius_m = int(round(radius_km * 1000))
-
-    params: dict[str, str] = {
-        # Correct order: circle:<longitude>,<latitude>,<radius>
-        "filter": f"circle:{longitude},{latitude},{radius_m}",
-        "bias": f"proximity:{longitude},{latitude}",
-        "categories": ",".join(cats),
-        "limit": str(min(limit, 100)),
-        "apiKey": settings.geoapify_api_key,  # server-side only, never logged
-    }
-
     timeout = float(settings.geoapify_timeout_seconds)
 
     try:
         async with httpx.AsyncClient(timeout=timeout) as client:
-            resp = await client.get(
-                "https://api.geoapify.com/v2/places",
-                params=params,
-            )
+            if category == "all":
+                # Parallel fetch per sub-category so each gets its own limit
+                tasks = [
+                    _fetch_single_category(
+                        client, latitude, longitude, sub, radius_m, limit,
+                        settings.geoapify_api_key,
+                    )
+                    for sub in _ALL_SUBCATEGORIES
+                ]
+                results = await asyncio.gather(*tasks, return_exceptions=True)
 
-        if resp.status_code == 401:
-            raise RuntimeError("Geoapify API key is invalid (401).")
-        if resp.status_code == 429:
-            raise RuntimeError("Geoapify rate limit exceeded (429).")
-        if resp.status_code != 200:
-            raise RuntimeError(f"Geoapify returned HTTP {resp.status_code}.")
-
-        data = resp.json()
+                services: list[dict[str, Any]] = []
+                for sub, res in zip(_ALL_SUBCATEGORIES, results):
+                    if isinstance(res, Exception):
+                        # Re-raise hard errors (auth, rate-limit); swallow per-category 400s
+                        if isinstance(res, RuntimeError) and (
+                            "invalid" in str(res) or "rate limit" in str(res)
+                        ):
+                            raise res
+                        logger.warning("Sub-category %s fetch failed: %s", sub, res)
+                    else:
+                        services.extend(res)
+            else:
+                services = await _fetch_single_category(
+                    client, latitude, longitude, category, radius_m, limit,
+                    settings.geoapify_api_key,
+                )
 
     except httpx.TimeoutException:
         raise RuntimeError("Geoapify request timed out.")
     except httpx.HTTPError as exc:
         raise RuntimeError(f"Geoapify HTTP error: {exc}") from exc
 
-    features = data.get("features", [])
-    services: list[dict[str, Any]] = []
-
-    for feat in features:
-        normalized = _normalize_feature(feat, latitude, longitude, category)
-        if normalized is not None:
-            services.append(normalized)
-
+    # Deduplicate (parallel all-query can produce duplicates at category boundaries)
+    services = deduplicate_services(services)
     # Sort by distance, nearest first
     services.sort(key=lambda s: s["distance_km"])
     return services
