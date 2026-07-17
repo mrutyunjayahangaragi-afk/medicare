@@ -239,6 +239,102 @@ async def fetch_nearby_services(
     return services
 
 
+# ── Supabase ambulance fallback ───────────────────────────────────────────
+
+def get_ambulance_orgs_from_supabase(
+    user_lat: float,
+    user_lon: float,
+    radius_km: float = 25.0,
+) -> list[dict]:
+    """
+    Fetch approved ambulance/emergency organisations from Supabase as a
+    fallback when live Geoapify data is absent or sparse.
+
+    Only organisations where:
+      - organization_type IN ('ambulance', 'emergency', 'emergency_services')
+      - is_verified = True
+      - latitude AND longitude are non-null
+    are returned.  Private details (email, internal IDs beyond place_id) are
+    not included — only public contact info.
+
+    Returns a normalised list in the same shape as _normalize_feature output.
+    """
+    try:
+        from app.db.supabase import get_supabase_admin_client
+
+        client = get_supabase_admin_client()
+        resp = (
+            client.table("organizations")
+            .select("id, name, organization_type, phone, address, latitude, longitude")
+            .eq("is_verified", True)
+            .in_("organization_type", ["ambulance", "emergency", "emergency_services"])
+            .not_.is_("latitude", "null")
+            .not_.is_("longitude", "null")
+            .limit(100)
+            .execute()
+        )
+        rows = resp.data or []
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Supabase ambulance fallback unavailable: %s", exc)
+        return []
+
+    results: list[dict] = []
+    for row in rows:
+        try:
+            place_lat = float(row["latitude"])
+            place_lon = float(row["longitude"])
+        except (TypeError, ValueError):
+            continue
+
+        dist_m = _haversine_m(user_lat, user_lon, place_lat, place_lon)
+        if dist_m / 1000 > radius_km:
+            continue
+
+        name = (row.get("name") or "").strip() or "Ambulance Service"
+        results.append(
+            {
+                "id": f"supabase_org_{row['id']}",
+                "name": name,
+                "category": "ambulance",
+                "address": row.get("address") or "",
+                "city": "",
+                "state": "",
+                "postcode": "",
+                "latitude": place_lat,
+                "longitude": place_lon,
+                "distance_km": round(dist_m / 1000, 2),
+                "phone": row.get("phone") or None,
+                "website": None,
+                "opening_hours": None,
+                "is_demo": False,
+                "source": "medicare",
+            }
+        )
+
+    results.sort(key=lambda s: s["distance_km"])
+    return results
+
+
+def deduplicate_services(services: list[dict]) -> list[dict]:
+    """
+    Remove duplicate services by (name_lower, rounded lat, rounded lon).
+    Keeps the first occurrence (Geoapify results come first when callers
+    concatenate live + Supabase lists).
+    """
+    seen: set[tuple] = set()
+    out: list[dict] = []
+    for s in services:
+        key = (
+            s["name"].lower().strip(),
+            round(s["latitude"], 3),
+            round(s["longitude"], 3),
+        )
+        if key not in seen:
+            seen.add(key)
+            out.append(s)
+    return out
+
+
 # ── Development fallback (only when APP_ENV != production) ────────────────
 
 def get_demo_services(

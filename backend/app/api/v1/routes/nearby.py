@@ -40,7 +40,12 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query, status
 
 from app.core.config import get_settings
-from app.services.geoapify_service import fetch_nearby_services, get_demo_services
+from app.services.geoapify_service import (
+    fetch_nearby_services,
+    get_ambulance_orgs_from_supabase,
+    deduplicate_services,
+    get_demo_services,
+)
 
 logger = logging.getLogger("medicare.routes.nearby")
 
@@ -180,6 +185,24 @@ async def get_nearby_services(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="Nearby services are temporarily unavailable.",
         )
+
+    # ── Supabase ambulance fallback ───────────────────────────────────────
+    # When the category includes ambulances, supplement live Geoapify results
+    # with verified ambulance/emergency organisations stored in Supabase.
+    # This handles areas where Geoapify has sparse emergency data.
+    if category in ("ambulance", "all"):
+        try:
+            supabase_orgs = get_ambulance_orgs_from_supabase(
+                latitude, longitude, radius_km
+            )
+            if supabase_orgs:
+                # Geoapify results first, then Supabase; deduplicate by name+coords
+                combined = deduplicate_services(services + supabase_orgs)
+                combined.sort(key=lambda s: s["distance_km"])
+                services = combined
+        except Exception as exc:  # noqa: BLE001
+            # Fallback failure must never break the main response
+            logger.warning("Supabase ambulance fallback failed: %s", exc)
 
     payload = _build_payload(latitude, longitude, radius_km, services)
     _cache_set(key, payload)

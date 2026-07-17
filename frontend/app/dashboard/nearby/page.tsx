@@ -181,6 +181,15 @@ function NearbyPageInner() {
           } else if (err.isTimeout) {
             msg = "The request timed out. Please try again.";
           }
+        } else {
+          // Use category-specific error message for generic failures
+          if (category === "pharmacy") {
+            msg = "Nearby pharmacies could not be loaded.";
+          } else if (category === "ambulance") {
+            msg = "Nearby ambulance services could not be loaded.";
+          } else if (category === "hospital") {
+            msg = "Nearby hospitals could not be loaded.";
+          }
         }
         setServiceError(msg);
         toast(msg, "error");
@@ -441,6 +450,7 @@ function NearbyPageInner() {
                   >
                     <EmptyNearbyState
                       reason={getEmptyReason()}
+                      category={appliedFilters.category}
                       onRetry={
                         serviceError
                           ? handleRefresh
