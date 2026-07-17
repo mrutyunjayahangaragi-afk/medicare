@@ -64,7 +64,7 @@ class Settings(BaseSettings):
     hf_severity_model: str | None = Field(default=None)
 
     # ── Geoapify Places API ─────────────────────────────────────────────────
-    geoapify_enabled: bool = Field(default=False)
+    geoapify_enabled: bool = Field(default=True)
     geoapify_api_key: str | None = Field(default=None)
     geoapify_timeout_seconds: int = Field(default=10)
 

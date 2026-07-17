@@ -64,7 +64,7 @@ export async function markNotificationAsRead(notificationId: string) {
 
 export async function markAllNotificationsAsRead() {
   const supabase = createClient();
-  const { error } = await supabase.rpc("mark_all_notifications_read()");
+  const { error } = await supabase.rpc("mark_all_notifications_read");
 
   if (error) {
     console.error("[notifications] mark all as read:", error);

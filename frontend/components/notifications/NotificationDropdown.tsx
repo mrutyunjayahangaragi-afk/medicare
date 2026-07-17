@@ -66,7 +66,7 @@ export default function NotificationDropdown({
     setIsMarkingAll(true);
     try {
       const supabase = createClient();
-      await supabase.rpc("mark_all_notifications_read()");
+      await supabase.rpc("mark_all_notifications_read");
       
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, is_read: true, read_at: new Date().toISOString() }))

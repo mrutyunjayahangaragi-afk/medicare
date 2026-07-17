@@ -3,6 +3,13 @@
 /**
  * NearbyMap — interactive Leaflet map for nearby medical services.
  * Dynamically imported to avoid SSR issues with Leaflet.
+ *
+ * Fix log (2026-07-17):
+ *   - Added ResizeObserver to call map.invalidateSize() whenever the container
+ *     changes dimensions, which fixes the blank-tile bug on initial render when
+ *     the parent's CSS height resolves after the map initialises.
+ *   - Leaflet CSS imported here (the component is SSR-disabled so no conflict).
+ *   - Default icon URL paths patched for Next.js bundler.
  */
 import { useEffect, useRef, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
@@ -25,9 +32,6 @@ const MARKER_COLORS: Record<string, string> = {
   ambulance: "#dc2626", // red
 };
 
-/**
- * Create a circular SVG div icon for a service marker.
- */
 function createServiceIcon(L: typeof import("leaflet"), category: string) {
   const color = MARKER_COLORS[category] ?? "#64748b";
   return L.divIcon({
@@ -70,14 +74,14 @@ export default function NearbyMap({
   const mapRef = useRef<LeafletMap | null>(null);
   const serviceMarkersRef = useRef<Map<string, LeafletMarker>>(new Map());
   const userMarkerRef = useRef<LeafletMarker | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   // Keep a ref of userLocation so the services effect always has the latest value
-  // without needing userLocation as a dependency (which would re-run fitBounds on every move)
   const userLocationRef = useRef<UserLocation | null>(userLocation);
   useEffect(() => {
     userLocationRef.current = userLocation;
   }, [userLocation]);
 
-  // Initialise map once on mount
+  // ── Initialise map once on mount ────────────────────────────────────────
   useEffect(() => {
     if (mapRef.current || !mapContainerRef.current) return;
 
@@ -85,6 +89,7 @@ export default function NearbyMap({
 
     (async () => {
       const L = (await import("leaflet")).default;
+
       // Fix default icon paths broken by Next.js bundler
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -96,13 +101,13 @@ export default function NearbyMap({
 
       if (cancelled || !mapContainerRef.current) return;
 
-      const initialCenter: [number, number] = userLocation
-        ? [userLocation.latitude, userLocation.longitude]
+      const initialCenter: [number, number] = userLocationRef.current
+        ? [userLocationRef.current.latitude, userLocationRef.current.longitude]
         : [20, 78]; // Fallback: India centre
 
       const map = L.map(mapContainerRef.current, {
         center: initialCenter,
-        zoom: userLocation ? 13 : 5,
+        zoom: userLocationRef.current ? 13 : 5,
         zoomControl: true,
         attributionControl: true,
       });
@@ -131,6 +136,24 @@ export default function NearbyMap({
       legend.addTo(map);
 
       mapRef.current = map;
+
+      // ── ResizeObserver: call invalidateSize when container resizes ────
+      // This is the key fix for the blank-map bug: when the parent's CSS height
+      // resolves (e.g. after hydration or layout shift), Leaflet needs to
+      // recalculate tile coverage.
+      if (typeof ResizeObserver !== "undefined" && mapContainerRef.current) {
+        const ro = new ResizeObserver(() => {
+          mapRef.current?.invalidateSize();
+        });
+        ro.observe(mapContainerRef.current);
+        resizeObserverRef.current = ro;
+      }
+
+      // Also call once immediately after mount so tiles render on first load
+      // even if no resize event fires.
+      setTimeout(() => {
+        mapRef.current?.invalidateSize();
+      }, 100);
     })();
 
     return () => {
@@ -139,7 +162,7 @@ export default function NearbyMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update user location marker
+  // ── Update user location marker ──────────────────────────────────────────
   useEffect(() => {
     if (!mapRef.current || !userLocation) return;
 
@@ -157,11 +180,17 @@ export default function NearbyMap({
         )
           .bindPopup("<b>You are here</b>")
           .addTo(map);
+
+        // Pan to user location when it first becomes available
+        map.setView([userLocation.latitude, userLocation.longitude], 13, { animate: true });
       }
+
+      // Invalidate after panning to ensure tiles cover the new view
+      map.invalidateSize();
     })();
   }, [userLocation]);
 
-  // Update service markers whenever the services list changes
+  // ── Update service markers whenever the services list changes ────────────
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -214,13 +243,16 @@ export default function NearbyMap({
         } else if (allPoints.length === 1) {
           map.setView(allPoints[0], 14);
         }
+
+        // Ensure tiles render after bounds change
+        map.invalidateSize();
       }
     })();
     // onServiceSelect is stable (wrapped in useCallback in parent)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services]);
 
-  // Pan to selected service and open its popup
+  // ── Pan to selected service and open its popup ──────────────────────────
   useEffect(() => {
     if (!selectedService || !mapRef.current) return;
 
@@ -235,24 +267,25 @@ export default function NearbyMap({
     }
   }, [selectedService]);
 
-  // Locate-me handler — pans to user location
+  // ── Locate-me handler ───────────────────────────────────────────────────
   const handleLocateMe = useCallback(() => {
     if (!mapRef.current) { onLocateMe(); return; }
 
-    if (userLocation) {
+    if (userLocationRef.current) {
       mapRef.current.setView(
-        [userLocation.latitude, userLocation.longitude],
+        [userLocationRef.current.latitude, userLocationRef.current.longitude],
         15,
         { animate: true }
       );
     } else {
       onLocateMe();
     }
-  }, [userLocation, onLocateMe]);
+  }, [onLocateMe]);
 
-  // Cleanup on unmount
+  // ── Cleanup on unmount ─────────────────────────────────────────────────
   useEffect(() => {
     return () => {
+      resizeObserverRef.current?.disconnect();
       if (mapRef.current) {
         mapRef.current.remove();
         mapRef.current = null;
@@ -262,9 +295,12 @@ export default function NearbyMap({
 
   return (
     <div className={`relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm ${className}`}>
+      {/* The map container needs an explicit height — Leaflet cannot render
+          inside a zero-height container. The parent page provides h-72/h-96/h-full
+          via the className prop; the min-h here is a safety net. */}
       <div
         ref={mapContainerRef}
-        className="w-full h-full min-h-[240px]"
+        className="w-full h-full min-h-[300px]"
         role="application"
         aria-label="Map showing nearby medical services"
       />

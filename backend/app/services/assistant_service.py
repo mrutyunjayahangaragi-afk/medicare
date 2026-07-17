@@ -212,7 +212,9 @@ class AssistantService:
     ) -> UUID:
         msg_id = uuid.uuid4()
         try:
-            msg_res = self.supabase.table("ai_messages").insert({
+            # Use admin client — the RLS policy only allows user-scoped inserts for
+            # role='user'. Assistant messages are server-generated and must bypass RLS.
+            msg_res = self.admin.table("ai_messages").insert({
                 "conversation_id": str(conv_id),
                 "user_id": str(user_id),
                 "role": "assistant",
@@ -234,7 +236,8 @@ class AssistantService:
             title = message[:60].strip()
             if len(message) > 60:
                 title += "…"
-            self.supabase.table("ai_conversations").update({"title": title}).eq(
+            # Use admin client since RLS has no explicit UPDATE policy for conversations
+            self.admin.table("ai_conversations").update({"title": title}).eq(
                 "id", str(conv_id)
             ).execute()
         except Exception:

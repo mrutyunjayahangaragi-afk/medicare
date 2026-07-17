@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import json
 import logging
-from functools import lru_cache
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -32,6 +31,8 @@ class ModelUnavailableError(RuntimeError):
 
 class ModelRegistry:
     """Holds the loaded pipeline, metadata, and label mapping."""
+
+    _instance: "ModelRegistry | None" = None
 
     def __init__(
         self,
@@ -60,9 +61,16 @@ class ModelRegistry:
         return str(self.metadata.get("safety_rules_version", "safety-v1"))
 
     @staticmethod
-    @lru_cache(maxsize=1)
     def get() -> "ModelRegistry":
-        """Load and cache the model registry. Raises ModelUnavailableError if artifacts missing."""
+        """Load and cache the model registry. Raises ModelUnavailableError if artifacts missing.
+
+        Unlike the previous lru_cache approach, this method re-attempts loading
+        on every call until it succeeds, so a transient startup failure does not
+        permanently block the ML feature for the lifetime of the process.
+        """
+        if ModelRegistry._instance is not None:
+            return ModelRegistry._instance
+
         pipeline_path = ARTIFACTS_DIR / "severity_pipeline.joblib"
         metadata_path = ARTIFACTS_DIR / "metadata.json"
         label_map_path = ARTIFACTS_DIR / "label_map.json"
@@ -98,4 +106,6 @@ class ModelRegistry:
         model = SeverityModelFactory.create(pipeline=pipeline, labels=labels)
 
         logger.info("ModelRegistry loaded — version=%s", metadata.get("model_version"))
-        return ModelRegistry(model=model, metadata=metadata, label_mapping=raw_label_map)
+        instance = ModelRegistry(model=model, metadata=metadata, label_mapping=raw_label_map)
+        ModelRegistry._instance = instance
+        return instance
