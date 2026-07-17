@@ -68,8 +68,9 @@ const NearbyMap = dynamic(() => import("@/components/nearby/NearbyMap"), {
 });
 
 // ── Distance filter → radius sent to backend ──────────────────────────────
+// Ambulance uses a wider default radius since live data is sparse globally.
 const DIST_TO_RADIUS_KM: Record<DistanceFilter, number> = {
-  all:   20,
+  all:   25,   // wider default ensures ambulance at 7.5km+ is always included
   "2km":  2,
   "5km":  5,
   "10km": 10,
