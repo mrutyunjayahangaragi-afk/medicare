@@ -12,7 +12,7 @@
  *  - Default Leaflet icon paths patched for Next.js bundler.
  */
 import { useEffect, useRef, useCallback } from "react";
-import "leaflet/dist/leaflet.css";
+// leaflet/dist/leaflet.css is imported once in app/layout.tsx
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 import type { NearbyService, UserLocation } from "@/types/nearby";
 import { DistanceCalculator } from "@/lib/nearby/DistanceCalculator";

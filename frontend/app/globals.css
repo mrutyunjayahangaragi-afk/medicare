@@ -510,3 +510,41 @@ video {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+15. LEAFLET MAP OVERRIDES
+   The global reset above sets max-width: 100% on every <img>.
+   Leaflet tiles are <img> elements that must be exactly 256×256 px.
+   Without this override the tiles are crushed to a near-zero width
+   and the map appears completely grey even though Leaflet initialised.
+   These rules must be MORE SPECIFIC than the reset rule.
+========================================================= */
+
+/* Keep tile images at their natural 256 × 256 size */
+.leaflet-container img.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
+  width: 256px !important;
+  height: 256px !important;
+  display: inline !important;
+}
+
+/* Prevent the container from hiding the tile pane */
+.leaflet-container {
+  z-index: 0;
+  isolation: isolate;
+}
+
+/* Restore correct pane stacking */
+.leaflet-pane            { z-index: 400; }
+.leaflet-tile-pane       { z-index: 200; }
+.leaflet-overlay-pane    { z-index: 400; }
+.leaflet-shadow-pane     { z-index: 500; }
+.leaflet-marker-pane     { z-index: 600; }
+.leaflet-tooltip-pane    { z-index: 650; }
+.leaflet-popup-pane      { z-index: 700; }
+.leaflet-map-pane canvas { z-index: 100; }
+.leaflet-map-pane svg    { z-index: 200; }
+
+/* Ensure the map control area never hides tiles */
+.leaflet-control-container { z-index: 800; }

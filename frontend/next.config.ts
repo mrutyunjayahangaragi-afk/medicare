@@ -91,8 +91,11 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
               "style-src 'self' 'unsafe-inline' https://unpkg.com",
-              "img-src 'self' data: https://*.supabase.co https://tile.openstreetmap.org https://lh3.googleusercontent.com https://unpkg.com",
-              `connect-src ${buildConnectSrc()}`,
+              // Tile subdomains a/b/c.tile.openstreetmap.org must all be permitted.
+              // The bare hostname without wildcard does NOT cover them.
+              "img-src 'self' data: blob: https://*.supabase.co https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://lh3.googleusercontent.com https://unpkg.com",
+              // connect-src must also allow tile requests in some browsers
+              `connect-src ${buildConnectSrc()} https://tile.openstreetmap.org https://*.tile.openstreetmap.org`,
               "frame-ancestors 'none'",
             ].join("; "),
           },
