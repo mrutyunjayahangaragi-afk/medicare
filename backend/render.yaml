@@ -37,6 +37,16 @@ services:
         sync: false
       - key: GEOAPIFY_ENABLED
         value: "true"
+      - key: GEOAPIFY_TIMEOUT_SECONDS
+        value: "10"
+      # Google Places API (New) — server-side only, never in Vercel public vars
+      # Enable "Places API (New)" in Google Cloud Console before setting this.
+      - key: GOOGLE_PLACES_ENABLED
+        value: "true"
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: GOOGLE_PLACES_TIMEOUT_SECONDS
+        value: "10"
       - key: HF_PROVIDER_ENABLED
         value: "false"
       - key: ML_SEVERITY_ENABLED

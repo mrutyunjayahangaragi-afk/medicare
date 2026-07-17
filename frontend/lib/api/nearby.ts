@@ -29,6 +29,12 @@ export interface NearbyServiceItem {
   phone: string | null;
   website: string | null;
   opening_hours: string | null;
+  /** Whether the place is currently open (Google Places only) */
+  is_open?: boolean | null;
+  /** Google Maps URI for directions (Google Places only) */
+  google_maps_uri?: string | null;
+  /** Data source: geoapify | google | medicare */
+  source?: string;
   /** True only for dev-mode demo records */
   is_demo: boolean;
 }
@@ -39,6 +45,8 @@ export interface NearbyServicesResponse {
   latitude: number;
   longitude: number;
   radius_km: number;
+  /** Which data sources contributed results */
+  sources?: string[];
 }
 
 export interface GetNearbyServicesParams {

@@ -5,6 +5,9 @@
 
 export type ServiceCategory = "hospital" | "pharmacy" | "ambulance";
 
+/** Data source that provided this service record. */
+export type ServiceSource = "geoapify" | "google" | "medicare" | "demo";
+
 export interface NearbyService {
   id: string;
   name: string;
@@ -20,6 +23,12 @@ export interface NearbyService {
   phone?: string | null;
   website?: string | null;
   opening_hours?: string | null;
+  /** Whether the place is currently open (Google Places only) */
+  is_open?: boolean | null;
+  /** Google Maps URI for directions (Google Places only) */
+  google_maps_uri?: string | null;
+  /** Data source that produced this record */
+  source?: ServiceSource;
   /** True for development demo records — never set in production */
   is_demo?: boolean;
 }

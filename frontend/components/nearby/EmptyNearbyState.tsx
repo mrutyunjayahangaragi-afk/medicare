@@ -11,14 +11,14 @@ interface EmptyNearbyStateProps {
   onRetry?: () => void;
 }
 
-// Category-specific "no results" messages
+// Category-specific "no results" messages — precise per spec
 const NO_RESULTS_DESC: Record<ServiceCategory | "all", string> = {
   hospital:
-    "No hospitals were found within this distance. Try increasing the search radius.",
+    "No hospitals were found within the selected distance. Try increasing the search radius.",
   pharmacy:
-    "No pharmacies were found within this distance. Try increasing the search radius.",
+    "No pharmacies were found within the selected distance. Try increasing the search radius.",
   ambulance:
-    "No ambulance or emergency services were found within this distance. Try increasing the search radius.",
+    "No verified ambulance services were found within the selected distance. Try increasing the search radius.",
   all: "No medical services were found nearby. Try increasing the search radius or switch category.",
 };
 

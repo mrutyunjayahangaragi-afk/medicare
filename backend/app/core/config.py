@@ -68,6 +68,11 @@ class Settings(BaseSettings):
     geoapify_api_key: str | None = Field(default=None)
     geoapify_timeout_seconds: int = Field(default=10)
 
+    # ── Google Places API (New) — server-side only, never sent to frontend ──
+    google_places_enabled: bool = Field(default=False)
+    google_places_api_key: str | None = Field(default=None)
+    google_places_timeout_seconds: int = Field(default=10)
+
     # ── Twilio (optional, disabled by default) ──────────────────────────────
     twilio_enabled: bool = Field(default=False)
     twilio_account_sid: str | None = Field(default=None)
@@ -138,6 +143,20 @@ class Settings(BaseSettings):
             raise ValueError("geoapify_timeout_seconds must be positive")
         return v
 
+    @field_validator("google_places_api_key")
+    @classmethod
+    def _validate_google_places_key(cls, v: str | None) -> str | None:
+        if v is not None and not v.strip():
+            raise ValueError("google_places_api_key must not be empty when provided")
+        return v.strip() if v else None
+
+    @field_validator("google_places_timeout_seconds")
+    @classmethod
+    def _validate_google_places_timeout(cls, v: int) -> int:
+        if v <= 0:
+            raise ValueError("google_places_timeout_seconds must be positive")
+        return v
+
     def __repr__(self) -> str:
         """Hide sensitive values from logs and representations."""
         safe_dict = self.model_dump()
@@ -146,6 +165,7 @@ class Settings(BaseSettings):
         safe_dict["gemini_api_key"] = "***HIDDEN***" if safe_dict.get("gemini_api_key") else None
         safe_dict["hf_token"] = "***HIDDEN***" if safe_dict.get("hf_token") else None
         safe_dict["geoapify_api_key"] = "***HIDDEN***" if safe_dict.get("geoapify_api_key") else None
+        safe_dict["google_places_api_key"] = "***HIDDEN***" if safe_dict.get("google_places_api_key") else None
         return f"Settings({safe_dict})"
 
 

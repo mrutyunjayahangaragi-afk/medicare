@@ -33,6 +33,9 @@ function toInternal(item: NearbyServiceItem): NearbyServiceType {
     phone: item.phone,
     website: item.website,
     opening_hours: item.opening_hours,
+    is_open: item.is_open ?? null,
+    google_maps_uri: item.google_maps_uri ?? null,
+    source: item.source as NearbyServiceType["source"],
     is_demo: item.is_demo,
   };
 }

@@ -6,7 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/Dialog";
-import { Hospital, Pill, Ambulance, MapPin, Phone, Globe, Navigation, ExternalLink } from "lucide-react";
+import { Hospital, Pill, Ambulance, MapPin, Phone, Globe, Navigation, ExternalLink, PhoneCall, Clock } from "lucide-react";
 import type { NearbyService } from "@/types/nearby";
 import { DistanceCalculator } from "@/lib/nearby/DistanceCalculator";
 
@@ -68,7 +68,10 @@ export default function ServiceDetailsDialog({
 
   const cfg = CATEGORY_CONFIG[service.category];
   const Icon = cfg.Icon;
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${service.latitude},${service.longitude}`;
+  // Prefer Google Maps URI (richer context) over raw coordinates
+  const directionsUrl =
+    service.google_maps_uri ||
+    `https://www.google.com/maps/dir/?api=1&destination=${service.latitude},${service.longitude}`;
   const websiteHref = service.website
     ? service.website.startsWith("http")
       ? service.website
@@ -163,19 +166,67 @@ export default function ServiceDetailsDialog({
               }
             />
           )}
+
+          {service.opening_hours && (
+            <DetailRow
+              icon={<Clock className="w-4 h-4" />}
+              label="Hours"
+              value={
+                <span>
+                  {service.opening_hours}
+                  {service.is_open === true && (
+                    <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-green-50 text-green-700 border border-green-200">
+                      Open now
+                    </span>
+                  )}
+                  {service.is_open === false && (
+                    <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-600 border border-red-200">
+                      Closed
+                    </span>
+                  )}
+                </span>
+              }
+            />
+          )}
+
+          {service.source === "medicare" && (
+            <DetailRow
+              icon={<MapPin className="w-4 h-4" />}
+              label="Source"
+              value={
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                  Medicare verified
+                </span>
+              }
+            />
+          )}
         </div>
 
-        {/* CTA */}
-        <a
-          href={directionsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-blue-600"
-          aria-label={`Get directions to ${service.name}`}
-        >
-          <Navigation className="w-4 h-4" aria-hidden="true" />
-          Get Directions
-        </a>
+        {/* CTAs */}
+        <div className="mt-4 flex flex-col gap-2">
+          <a
+            href={directionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-blue-600"
+            aria-label={`Get directions to ${service.name}`}
+          >
+            <Navigation className="w-4 h-4" aria-hidden="true" />
+            Get Directions
+          </a>
+
+          {/* Call Now — only when phone exists */}
+          {service.phone && (
+            <a
+              href={`tel:${service.phone}`}
+              className="w-full inline-flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-green-600"
+              aria-label={`Call ${service.name} now`}
+            >
+              <PhoneCall className="w-4 h-4" aria-hidden="true" />
+              Call Now
+            </a>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
