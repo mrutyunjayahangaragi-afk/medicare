@@ -47,19 +47,9 @@ export default async function ResponderLayout({
     redirect("/unauthorized");
   }
 
-  // For responders, check for approved organization membership
-  if (profile.role === "responder") {
-    const { data: organizationMember } = await supabase
-      .from("organization_members")
-      .select("organization_id, status")
-      .eq("user_id", user.id)
-      .eq("status", "approved")
-      .single();
-
-    if (!organizationMember) {
-      redirect("/unauthorized");
-    }
-  }
+  // For responders, organization membership is optional.
+  // The role on the profile is the authoritative access grant.
+  // (Some standalone responders may not belong to an organization.)
 
   return (
     <UserRealtimeProvider userId={user.id}>

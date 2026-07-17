@@ -71,7 +71,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Resolve trusted role and authorized portal
-  const resolution = await resolveUserPortal(supabase, user.id, existing.role as TrustedRole);
+  const resolution = await resolveUserPortal(supabase, user.id, existing.role as string | null);
 
   // Handle registration flow for existing users
   if (registrationType && (registrationType === "hospital" || registrationType === "responder")) {
@@ -90,7 +90,7 @@ export async function GET(request: NextRequest) {
         .select("id, status")
         .eq("user_id", user.id)
         .eq("application_type", requestedPortal)
-        .single();
+        .maybeSingle();
 
       if (existingApp) {
         // Application exists, redirect based on status
@@ -145,7 +145,7 @@ export async function GET(request: NextRequest) {
 async function resolveUserPortal(
   supabase: Awaited<ReturnType<typeof createClient>>,
   userId: string,
-  role: TrustedRole | null
+  role: TrustedRole | string | null
 ): Promise<{
   trustedRole: TrustedRole | null;
   authorizedPortal: string | null;
@@ -163,13 +163,44 @@ async function resolveUserPortal(
     };
   }
 
+  // Approved users (hospital_staff, responder, admin) have their role set —
+  // go straight to portal. Only check pending applications for "user" role
+  // since they don't have a portal role yet.
+  if (role !== "user") {
+    // Role is already elevated — skip application status checks and go to portal
+    switch (role) {
+      case "admin":
+        return { trustedRole: role, authorizedPortal: "admin", organizationId: null, applicationStatus: null, applicationType: null };
+      case "hospital_staff":
+      case "hospital": {
+        const { data: hospitalOrg } = await supabase
+          .from("organization_members")
+          .select("organization_id")
+          .eq("user_id", userId)
+          .eq("status", "approved")
+          .maybeSingle();
+        return {
+          trustedRole: role as TrustedRole,
+          authorizedPortal: "hospital",
+          organizationId: hospitalOrg?.organization_id ?? null,
+          applicationStatus: null,
+          applicationType: null,
+        };
+      }
+      case "responder":
+      case "volunteer":
+        return { trustedRole: role as TrustedRole, authorizedPortal: "responder", organizationId: null, applicationStatus: null, applicationType: null };
+    }
+  }
+
+  // For "user" role — check pending / rejected applications before redirecting
   // Check for pending applications
   const { data: application } = await supabase
     .from("portal_applications")
     .select("status, application_type")
     .eq("user_id", userId)
     .eq("status", "pending")
-    .single();
+    .maybeSingle();
 
   if (application) {
     return {
@@ -181,13 +212,13 @@ async function resolveUserPortal(
     };
   }
 
-  // Check for rejected applications
+  // Check for rejected applications (user role still, never approved)
   const { data: rejectedApp } = await supabase
     .from("portal_applications")
     .select("status")
     .eq("user_id", userId)
     .eq("status", "rejected")
-    .single();
+    .maybeSingle();
 
   if (rejectedApp) {
     return {
@@ -199,99 +230,14 @@ async function resolveUserPortal(
     };
   }
 
-  // Resolve authorized portal based on trusted role
-  switch (role) {
-    case "user":
-      return {
-        trustedRole: role,
-        authorizedPortal: "dashboard",
-        organizationId: null,
-        applicationStatus: null,
-        applicationType: null,
-      };
-
-    case "responder":
-      // Check for approved organization membership
-      const { data: responderOrg } = await supabase
-        .from("organization_members")
-        .select("organization_id")
-        .eq("user_id", userId)
-        .eq("status", "approved")
-        .single();
-
-      if (responderOrg) {
-        return {
-          trustedRole: role,
-          authorizedPortal: "responder",
-          organizationId: responderOrg.organization_id,
-          applicationStatus: null,
-          applicationType: null,
-        };
-      }
-
-      return {
-        trustedRole: role,
-        authorizedPortal: null,
-        organizationId: null,
-        applicationStatus: "pending",
-        applicationType: "responder",
-      };
-
-    case "hospital_staff":
-      // Check for approved hospital organization membership
-      const { data: hospitalOrg } = await supabase
-        .from("organization_members")
-        .select("organization_id")
-        .eq("user_id", userId)
-        .eq("status", "approved")
-        .single();
-
-      if (hospitalOrg) {
-        return {
-          trustedRole: role,
-          authorizedPortal: "hospital",
-          organizationId: hospitalOrg.organization_id,
-          applicationStatus: null,
-          applicationType: null,
-        };
-      }
-
-      return {
-        trustedRole: role,
-        authorizedPortal: null,
-        organizationId: null,
-        applicationStatus: "pending",
-        applicationType: "hospital",
-      };
-
-    case "admin":
-      return {
-        trustedRole: role,
-        authorizedPortal: "admin",
-        organizationId: null,
-        applicationStatus: null,
-        applicationType: null,
-      };
-
-    case "volunteer":
-      // Volunteers use responder portal
-      return {
-        trustedRole: role,
-        authorizedPortal: "responder",
-        organizationId: null,
-        applicationStatus: null,
-        applicationType: null,
-      };
-
-    default:
-      return {
-        trustedRole: null,
-        authorizedPortal: null,
-        organizationId: null,
-        applicationStatus: null,
-        applicationType: null,
-      };
-  }
+  // Plain user with no application
+  return {
+    trustedRole: role,
+    authorizedPortal: "dashboard",
+    organizationId: null,
+    applicationStatus: null,
+    applicationType: null,
+  };
 }
 
 async function createApplication(
@@ -305,7 +251,7 @@ async function createApplication(
     .select("id")
     .eq("user_id", userId)
     .eq("application_type", applicationType)
-    .single();
+    .maybeSingle();
 
   if (existing) {
     return;

@@ -31,7 +31,10 @@ export default function ApproveApplicationDialog({
     } catch (err) {
       console.error("Failed to approve application:", err);
       if (err instanceof ApiError) {
-        setError(err.message);
+        // Surface the real backend error — never hide it
+        setError(`Approval failed (${err.status}): ${err.message}`);
+      } else if (err instanceof Error) {
+        setError(`Approval failed: ${err.message}`);
       } else {
         setError("Failed to approve application. Please try again.");
       }

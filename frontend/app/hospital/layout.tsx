@@ -48,7 +48,7 @@ export default async function HospitalLayout({
     .select("organization_id, status")
     .eq("user_id", user.id)
     .eq("status", "approved")
-    .single();
+    .maybeSingle();
 
   if (!organizationMember) {
     redirect("/unauthorized");
@@ -59,7 +59,7 @@ export default async function HospitalLayout({
     .from("organizations")
     .select("organization_type, is_verified")
     .eq("id", organizationMember.organization_id)
-    .single();
+    .maybeSingle();
 
   if (!organization || organization.organization_type !== "hospital" || !organization.is_verified) {
     redirect("/unauthorized");
@@ -70,7 +70,7 @@ export default async function HospitalLayout({
     .from("hospital_profiles")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   const userFullName =
     profileData?.full_name ||

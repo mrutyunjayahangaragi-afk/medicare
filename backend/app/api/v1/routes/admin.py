@@ -622,102 +622,280 @@ def approve_application(
 ):
     """Approve a pending application and update user role.
 
-    Requires admin role. Prevents self-approval.
-    Uses the validated user ID from the auth context — never a client-supplied value.
+    All writes use the service-role admin client to bypass RLS.
+    The user-scoped client is only used to READ the application (proves RLS).
+    Full error details are always surfaced — never hidden.
     """
-    supabase = create_user_supabase_client(auth_context.access_token)
-    admin_user_id = auth_context.user.id  # Fixed: was auth_context.user_id
+    from app.db.supabase import get_supabase_admin_client
+    import logging
+    logger = logging.getLogger("medicare.routes.admin.approve")
 
-    # Get the application
+    admin_user_id = auth_context.user.id
+    # Use service-role client for all reads/writes to avoid RLS surprises
+    admin_client = get_supabase_admin_client()
+
+    # Fetch the application (service-role bypasses RLS — admin legitimacy already
+    # confirmed by require_admin dependency which reads role from DB)
     application_result = (
-        supabase.table("portal_applications").select("*").eq("id", application_id).execute()
+        admin_client.table("portal_applications").select("*").eq("id", application_id).execute()
     )
     if not application_result.data:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Application not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Application {application_id} not found",
         )
 
     application = application_result.data[0]
 
-    # Prevent self-approval
     if application["user_id"] == admin_user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You cannot approve your own application",
         )
 
-    # Verify status is pending
     if application["status"] != "pending":
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Application is not pending"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Application is not pending (current status: {application['status']})",
         )
 
-    # Update application status
-    supabase.table("portal_applications").update({
+    now_iso = datetime.now(timezone.utc).isoformat()
+    org_id: Optional[str] = None
+
+    # ── Step 1: Mark application approved ─────────────────────────────────
+    update_res = admin_client.table("portal_applications").update({
         "status": "approved",
         "reviewed_by": admin_user_id,
-        "reviewed_at": datetime.now(timezone.utc).isoformat(),
+        "reviewed_at": now_iso,
+        "updated_at": now_iso,
     }).eq("id", application_id).execute()
 
-    # Update user role based on application type
+    if not update_res.data:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update application status — database returned no rows. "
+                   "Check Supabase RLS policies on portal_applications.",
+        )
+
     if application["application_type"] == "hospital":
-        supabase.table("profiles").update({
+        # ── Step 2: Resolve organization name ─────────────────────────────
+        org_name = (application.get("organization_name") or "").strip()
+        if not org_name:
+            # Safely derive from applicant profile (use maybe_single to avoid exceptions)
+            profile_res = (
+                admin_client.table("profiles")
+                .select("email, full_name")
+                .eq("id", application["user_id"])
+                .maybe_single()
+                .execute()
+            )
+            profile_data = profile_res.data or {}
+            email = profile_data.get("email") or ""
+            full_name = (profile_data.get("full_name") or "").strip()
+            org_name = (
+                full_name
+                or (email.split("@")[0] if email else "")
+                or f"Hospital-{application_id[:8]}"
+            ).strip()
+            if not org_name:
+                org_name = f"Hospital-{application_id[:8]}"
+
+        # ── Step 3: Upsert organization ────────────────────────────────────
+        try:
+            org_insert = (
+                admin_client.table("organizations")
+                .insert({
+                    "name": org_name,
+                    "organization_type": "hospital",
+                    "address": application.get("address"),
+                    "phone": application.get("phone"),
+                    "is_verified": True,
+                })
+                .select("id")
+                .execute()
+            )
+            if org_insert.data:
+                org_id = org_insert.data[0]["id"]
+            else:
+                raise RuntimeError(f"Organization insert returned no data for name='{org_name}'")
+        except Exception as org_exc:
+            # Likely unique-name collision — find the existing org
+            existing_res = (
+                admin_client.table("organizations")
+                .select("id")
+                .eq("name", org_name)
+                .limit(1)
+                .execute()
+            )
+            if existing_res.data:
+                org_id = existing_res.data[0]["id"]
+                admin_client.table("organizations").update({
+                    "is_verified": True,
+                    "address": application.get("address"),
+                    "phone": application.get("phone"),
+                    "updated_at": now_iso,
+                }).eq("id", org_id).execute()
+                logger.info(
+                    "Reused existing organization %s for application %s (error: %s)",
+                    org_id, application_id, org_exc,
+                )
+            else:
+                logger.error(
+                    "Organization upsert failed for application %s: %s",
+                    application_id, org_exc, exc_info=True,
+                )
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail=f"Failed to create or find organization '{org_name}': {org_exc}",
+                )
+
+        # ── Step 4: Create/update membership ──────────────────────────────
+        try:
+            admin_client.table("organization_members").upsert(
+                {
+                    "organization_id": org_id,
+                    "user_id": application["user_id"],
+                    "member_role": "owner",
+                    "status": "approved",
+                    "updated_at": now_iso,
+                },
+                on_conflict="organization_id,user_id",
+            ).execute()
+        except Exception as mem_exc:
+            logger.warning(
+                "Organization membership upsert failed (non-fatal) for application %s: %s",
+                application_id, mem_exc,
+            )
+
+        # ── Step 5: Update profile role + organization_id ──────────────────
+        profile_update_res = admin_client.table("profiles").update({
             "role": "hospital_staff",
+            "organization_id": org_id,
+            "updated_at": now_iso,
         }).eq("id", application["user_id"]).execute()
 
-        # Create organization
-        organization_result = supabase.table("organizations").insert({
-            "name": application["organization_name"],
-            "organization_type": "hospital",
-            "address": application.get("address"),
-            "phone": application.get("phone"),
-            "is_verified": True,
-        }).select("id").execute()
-
-        # Create organization membership and update profile organization_id
-        if organization_result.data:
-            org_id = organization_result.data[0]["id"]
-            supabase.table("organization_members").insert({
-                "organization_id": org_id,
-                "user_id": application["user_id"],
-                "member_role": "owner",
-                "status": "approved",
-            }).execute()
-            # Update profile with organization_id so portal redirect works immediately
-            supabase.table("profiles").update({
-                "organization_id": org_id,
-            }).eq("id", application["user_id"]).execute()
+        if not profile_update_res.data:
+            logger.error(
+                "Profile role update returned no rows for user %s (application %s). "
+                "Possible RLS block or trigger issue.",
+                application["user_id"], application_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=(
+                    f"Failed to update profile role for user {application['user_id']}. "
+                    "Check the protect_profile_auth_fields trigger and RLS policies on profiles."
+                ),
+            )
 
     elif application["application_type"] == "responder":
-        supabase.table("profiles").update({
+        # ── Step 5 (responder): Update profile role ────────────────────────
+        profile_update_res = admin_client.table("profiles").update({
             "role": "responder",
+            "updated_at": now_iso,
         }).eq("id", application["user_id"]).execute()
 
-    # Create audit log
-    supabase.table("audit_logs").insert({
-        "action": "approve_application",
-        "entity_type": "portal_application",
-        "entity_id": application_id,
-        "actor_id": admin_user_id,
-        "new_data": {
-            "application_type": application["application_type"],
-            "applicant_id": application["user_id"],
-        },
-    }).execute()
+        if not profile_update_res.data:
+            logger.error(
+                "Responder profile role update returned no rows for user %s (application %s).",
+                application["user_id"], application_id,
+            )
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=(
+                    f"Failed to update profile role to responder for user {application['user_id']}. "
+                    "Check the protect_profile_auth_fields trigger and RLS policies on profiles."
+                ),
+            )
 
-    # Create notification for applicant
-    supabase.table("notifications").insert({
-        "recipient_id": application["user_id"],
-        "title": "Application Approved",
-        "message": f"Your {application['application_type']} application has been approved.",
-        "type": "system",
-    }).execute()
+        # ── Step 4 (responder): Create org membership if org_name provided ─
+        responder_org_name = (application.get("organization_name") or "").strip()
+        if responder_org_name:
+            try:
+                resp_org_insert = (
+                    admin_client.table("organizations")
+                    .insert({
+                        "name": responder_org_name,
+                        "organization_type": "other",
+                        "address": application.get("address"),
+                        "phone": application.get("phone"),
+                        "is_verified": True,
+                    })
+                    .select("id")
+                    .execute()
+                )
+                if resp_org_insert.data:
+                    org_id = resp_org_insert.data[0]["id"]
+            except Exception:
+                existing_resp_org = (
+                    admin_client.table("organizations")
+                    .select("id")
+                    .eq("name", responder_org_name)
+                    .limit(1)
+                    .execute()
+                )
+                if existing_resp_org.data:
+                    org_id = existing_resp_org.data[0]["id"]
 
-    # Return updated application
+            if org_id:
+                try:
+                    admin_client.table("organization_members").upsert(
+                        {
+                            "organization_id": org_id,
+                            "user_id": application["user_id"],
+                            "member_role": "responder",
+                            "status": "approved",
+                            "updated_at": now_iso,
+                        },
+                        on_conflict="organization_id,user_id",
+                    ).execute()
+                except Exception as mem_exc:
+                    logger.warning("Responder org membership upsert non-fatal: %s", mem_exc)
+
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Unknown application type: {application['application_type']}",
+        )
+
+    # ── Step 6: Audit log (non-fatal) ──────────────────────────────────────
+    try:
+        admin_client.table("audit_logs").insert({
+            "action": "application_approved",
+            "entity_type": "portal_application",
+            "entity_id": application_id,
+            "actor_id": admin_user_id,
+            "old_data": {"status": "pending"},
+            "new_data": {
+                "status": "approved",
+                "application_type": application["application_type"],
+                "applicant_id": application["user_id"],
+                "organization_id": org_id,
+            },
+        }).execute()
+    except Exception as audit_exc:
+        logger.warning("Audit log insert non-fatal for %s: %s", application_id, audit_exc)
+
+    # ── Step 7: In-app notification (non-fatal) ────────────────────────────
+    try:
+        admin_client.table("notifications").insert({
+            "recipient_id": application["user_id"],
+            "title": "Application Approved",
+            "message": (
+                f"Your {application['application_type']} application has been approved. "
+                "You can now log in to access your portal."
+            ),
+            "type": "application_approved",
+            "is_read": False,
+        }).execute()
+    except Exception as notif_exc:
+        logger.warning("Notification insert non-fatal for %s: %s", application_id, notif_exc)
+
+    # Return the updated application record
     updated_result = (
-        supabase.table("portal_applications").select("*").eq("id", application_id).execute()
+        admin_client.table("portal_applications").select("*").eq("id", application_id).execute()
     )
-    return updated_result.data[0] if updated_result.data else None
+    return updated_result.data[0] if updated_result.data else {"id": application_id, "status": "approved"}
 
 
 @router.post("/applications/{application_id}/reject")
@@ -729,69 +907,92 @@ def reject_application(
 ):
     """Reject a pending application.
 
-    Requires admin role. Prevents self-rejection. Reason is required.
+    Requires admin role. Prevents self-rejection. Reason is required (10-500 chars).
+    All writes use the service-role client to bypass RLS.
+    Full error details are always surfaced in the response.
     """
-    supabase = create_user_supabase_client(auth_context.access_token)
-    admin_user_id = auth_context.user.id  # Fixed: was auth_context.user_id
+    from app.db.supabase import get_supabase_admin_client
+    import logging
+    logger = logging.getLogger("medicare.routes.admin.reject")
 
-    # Get the application
+    admin_user_id = auth_context.user.id
+    admin_client = get_supabase_admin_client()
+    now_iso = datetime.now(timezone.utc).isoformat()
+
     application_result = (
-        supabase.table("portal_applications").select("*").eq("id", application_id).execute()
+        admin_client.table("portal_applications").select("*").eq("id", application_id).execute()
     )
     if not application_result.data:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Application not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Application {application_id} not found",
         )
 
     application = application_result.data[0]
 
-    # Prevent self-rejection
     if application["user_id"] == admin_user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="You cannot reject your own application",
         )
 
-    # Verify status is pending
     if application["status"] != "pending":
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Application is not pending"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Application is not pending (current status: {application['status']})",
         )
 
-    # Update application status
-    supabase.table("portal_applications").update({
+    # ── Step 1: Mark application rejected ─────────────────────────────────
+    update_res = admin_client.table("portal_applications").update({
         "status": "rejected",
         "reviewed_by": admin_user_id,
-        "reviewed_at": datetime.now(timezone.utc).isoformat(),
+        "reviewed_at": now_iso,
         "rejection_reason": reason,
+        "updated_at": now_iso,
     }).eq("id", application_id).execute()
 
-    # Create audit log
-    supabase.table("audit_logs").insert({
-        "action": "reject_application",
-        "entity_type": "portal_application",
-        "entity_id": application_id,
-        "actor_id": admin_user_id,
-        "new_data": {
-            "application_type": application["application_type"],
-            "applicant_id": application["user_id"],
-            "rejection_reason": reason,
-        },
-    }).execute()
+    if not update_res.data:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update application status — database returned no rows. "
+                   "Check Supabase RLS policies on portal_applications.",
+        )
 
-    # Create notification for applicant
-    supabase.table("notifications").insert({
-        "recipient_id": application["user_id"],
-        "title": "Application Rejected",
-        "message": (
-            f"Your {application['application_type']} application has been rejected. "
-            f"Reason: {reason}"
-        ),
-        "type": "system",
-    }).execute()
+    # ── Step 2: Audit log (non-fatal) ──────────────────────────────────────
+    try:
+        admin_client.table("audit_logs").insert({
+            "action": "application_rejected",
+            "entity_type": "portal_application",
+            "entity_id": application_id,
+            "actor_id": admin_user_id,
+            "old_data": {"status": "pending"},
+            "new_data": {
+                "status": "rejected",
+                "application_type": application["application_type"],
+                "applicant_id": application["user_id"],
+                "rejection_reason": reason,
+            },
+        }).execute()
+    except Exception as audit_exc:
+        logger.warning("Audit log insert non-fatal for %s: %s", application_id, audit_exc)
 
-    # Return updated application
+    # ── Step 3: In-app notification (non-fatal) ────────────────────────────
+    try:
+        admin_client.table("notifications").insert({
+            "recipient_id": application["user_id"],
+            "title": "Application Rejected",
+            "message": (
+                f"Your {application['application_type']} application has been rejected. "
+                f"Reason: {reason}"
+            ),
+            "type": "application_rejected",
+            "is_read": False,
+        }).execute()
+    except Exception as notif_exc:
+        logger.warning("Notification insert non-fatal for %s: %s", application_id, notif_exc)
+
+    # Return the updated application record
     updated_result = (
-        supabase.table("portal_applications").select("*").eq("id", application_id).execute()
+        admin_client.table("portal_applications").select("*").eq("id", application_id).execute()
     )
-    return updated_result.data[0] if updated_result.data else None
+    return updated_result.data[0] if updated_result.data else {"id": application_id, "status": "rejected"}

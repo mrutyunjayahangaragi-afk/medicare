@@ -20,7 +20,7 @@ export default async function HospitalDashboardPage() {
     .from("hospital_profiles")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   if (!hospitalProfile) {
     redirect("/hospital/profile");

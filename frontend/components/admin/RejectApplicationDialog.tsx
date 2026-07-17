@@ -36,7 +36,10 @@ export default function RejectApplicationDialog({
     } catch (err) {
       console.error("Failed to reject application:", err);
       if (err instanceof ApiError) {
-        setError(err.message);
+        // Surface the real backend error — never hide it
+        setError(`Rejection failed (${err.status}): ${err.message}`);
+      } else if (err instanceof Error) {
+        setError(`Rejection failed: ${err.message}`);
       } else {
         setError("Failed to reject application. Please try again.");
       }

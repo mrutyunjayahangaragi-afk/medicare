@@ -17,7 +17,7 @@ export default async function HospitalProfilePage() {
     .from("hospital_profiles")
     .select("*")
     .eq("user_id", user.id)
-    .single();
+    .maybeSingle();
 
   return (
     <div className="p-6 lg:p-8 space-y-6">

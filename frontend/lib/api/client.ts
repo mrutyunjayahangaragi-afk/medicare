@@ -97,8 +97,16 @@ export async function apiFetch<T>(
     let message = `API error ${response.status}`;
     let data: unknown;
     try {
-      const body = (await response.json()) as Partial<ApiResponse>;
-      if (body.message) message = body.message;
+      const body = (await response.json()) as Partial<ApiResponse> & { detail?: string | unknown };
+      // FastAPI returns errors as {"detail": "..."} — also check body.message for our own routes
+      if (typeof body.detail === "string" && body.detail) {
+        message = body.detail;
+      } else if (body.message) {
+        message = body.message;
+      } else if (body.detail && typeof body.detail === "object") {
+        // FastAPI validation errors: detail is an array
+        try { message = JSON.stringify(body.detail); } catch { /* ignore */ }
+      }
       data = body.data;
     } catch {
       // Body was not JSON — keep default message
