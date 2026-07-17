@@ -11,14 +11,17 @@ export interface NearbyService {
   category: ServiceCategory;
   latitude: number;
   longitude: number;
-  address?: string;
-  city?: string;
-  phone?: string;
-  website?: string;
+  address: string;
+  city: string;
+  state?: string;
+  postcode?: string;
   /** Distance in kilometres from the user's current location */
   distance: number;
-  /** Source of the data: 'geoapify' or 'medicare' */
-  source?: string;
+  phone?: string | null;
+  website?: string | null;
+  opening_hours?: string | null;
+  /** True for development demo records — never set in production */
+  is_demo?: boolean;
 }
 
 export type LocationStatus =
@@ -42,24 +45,4 @@ export interface NearbyFilters {
   category: ServiceCategory | "all";
   distance: DistanceFilter;
   search: string;
-}
-
-/** Raw Overpass API element */
-export interface OverpassElement {
-  id: number;
-  type: "node" | "way" | "relation";
-  lat?: number;
-  lon?: number;
-  center?: { lat: number; lon: number };
-  tags?: Record<string, string>;
-}
-
-export interface OverpassResponse {
-  elements: OverpassElement[];
-}
-
-/** API route response shape */
-export interface NearbyApiResponse {
-  services: NearbyService[];
-  error?: string;
 }

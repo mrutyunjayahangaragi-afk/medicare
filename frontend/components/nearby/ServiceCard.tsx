@@ -1,6 +1,6 @@
 "use client";
 
-import { Hospital, Pill, Ambulance, MapPin, Phone, Globe, Navigation, ExternalLink } from "lucide-react";
+import { Hospital, Pill, Ambulance, MapPin, Phone, Globe, Navigation, ExternalLink, Clock } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { NearbyService } from "@/types/nearby";
 import { DistanceCalculator } from "@/lib/nearby/DistanceCalculator";
@@ -136,6 +136,21 @@ export default function ServiceCard({
               <span className="truncate">{service.website.replace(/^https?:\/\//, "")}</span>
               <ExternalLink className="w-2.5 h-2.5 flex-shrink-0" aria-hidden="true" />
             </a>
+          )}
+
+          {/* Opening hours */}
+          {service.opening_hours && (
+            <p className="mt-1 text-xs text-slate-500 flex items-center gap-1">
+              <Clock className="w-3 h-3 flex-shrink-0 text-slate-400" aria-hidden="true" />
+              {service.opening_hours}
+            </p>
+          )}
+
+          {/* Demo badge */}
+          {service.is_demo && (
+            <span className="inline-flex items-center mt-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-200">
+              Demo data
+            </span>
           )}
         </div>
       </div>

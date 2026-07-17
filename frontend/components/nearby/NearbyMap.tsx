@@ -1,20 +1,21 @@
 "use client";
 
 /**
- * NearbyMap — interactive Leaflet map for nearby medical services.
- * Dynamically imported to avoid SSR issues with Leaflet.
+ * NearbyMap — SSR-disabled Leaflet map for nearby medical services.
  *
- * Fix log (2026-07-17):
- *   - Added ResizeObserver to call map.invalidateSize() whenever the container
- *     changes dimensions, which fixes the blank-tile bug on initial render when
- *     the parent's CSS height resolves after the map initialises.
- *   - Leaflet CSS imported here (the component is SSR-disabled so no conflict).
- *   - Default icon URL paths patched for Next.js bundler.
+ * Fixes applied:
+ *  - ResizeObserver calls invalidateSize() when container dimensions change.
+ *  - 100 ms deferred invalidateSize() fires even when no resize event occurs.
+ *  - Pans to user location when it first becomes available.
+ *  - invalidateSize() after every fitBounds / setView so tiles fully render.
+ *  - Rich popups: name, category badge, address, distance, phone, directions.
+ *  - Default Leaflet icon paths patched for Next.js bundler.
  */
 import { useEffect, useRef, useCallback } from "react";
 import "leaflet/dist/leaflet.css";
 import type { Map as LeafletMap, Marker as LeafletMarker } from "leaflet";
 import type { NearbyService, UserLocation } from "@/types/nearby";
+import { DistanceCalculator } from "@/lib/nearby/DistanceCalculator";
 
 interface NearbyMapProps {
   userLocation: UserLocation | null;
@@ -25,26 +26,24 @@ interface NearbyMapProps {
   className?: string;
 }
 
-// Marker colours per category
-const MARKER_COLORS: Record<string, string> = {
-  hospital:  "#2563eb", // blue
-  pharmacy:  "#16a34a", // green
-  ambulance: "#dc2626", // red
+// ── Marker colours ────────────────────────────────────────────────────────
+const MARKER_COLORS: Record<string, { fill: string; ring: string }> = {
+  hospital:  { fill: "#2563eb", ring: "rgba(37,99,235,0.25)"  },
+  pharmacy:  { fill: "#16a34a", ring: "rgba(22,163,74,0.25)"  },
+  ambulance: { fill: "#dc2626", ring: "rgba(220,38,38,0.25)"  },
 };
 
 function createServiceIcon(L: typeof import("leaflet"), category: string) {
-  const color = MARKER_COLORS[category] ?? "#64748b";
+  const { fill } = MARKER_COLORS[category] ?? { fill: "#64748b", ring: "transparent" };
   return L.divIcon({
     className: "",
     html: `<div style="
-        width:32px;height:32px;border-radius:50%;
-        background:${color};border:3px solid #fff;
-        box-shadow:0 2px 8px rgba(0,0,0,0.25);
-        display:flex;align-items:center;justify-content:center;
-      "></div>`,
-    iconSize: [32, 32],
-    iconAnchor: [16, 16],
-    popupAnchor: [0, -18],
+      width:30px;height:30px;border-radius:50%;
+      background:${fill};border:3px solid #fff;
+      box-shadow:0 2px 8px rgba(0,0,0,0.30);"></div>`,
+    iconSize:   [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor:[0, -18],
   });
 }
 
@@ -52,15 +51,66 @@ function createUserIcon(L: typeof import("leaflet")) {
   return L.divIcon({
     className: "",
     html: `<div style="
-        width:20px;height:20px;border-radius:50%;
-        background:#2563eb;border:3px solid #fff;
-        box-shadow:0 0 0 4px rgba(37,99,235,0.25);
-      "></div>`,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    popupAnchor: [0, -12],
+      width:18px;height:18px;border-radius:50%;
+      background:#2563eb;border:3px solid #fff;
+      box-shadow:0 0 0 5px rgba(37,99,235,0.28);"></div>`,
+    iconSize:   [18, 18],
+    iconAnchor: [9, 9],
+    popupAnchor:[0, -12],
   });
 }
+
+// ── Rich popup HTML ───────────────────────────────────────────────────────
+function makePopupHtml(service: NearbyService): string {
+  const labelMap: Record<string, string> = {
+    hospital: "Hospital",
+    pharmacy: "Pharmacy",
+    ambulance: "Ambulance",
+  };
+  const colorMap: Record<string, string> = {
+    hospital: "#2563eb",
+    pharmacy: "#16a34a",
+    ambulance: "#dc2626",
+  };
+  const label = labelMap[service.category] ?? service.category;
+  const color = colorMap[service.category] ?? "#64748b";
+  const distLabel = DistanceCalculator.format(service.distance);
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${service.latitude},${service.longitude}`;
+
+  const phoneRow = service.phone
+    ? `<a href="tel:${service.phone}" style="display:block;color:#2563eb;font-size:11px;margin-top:3px;">📞 ${service.phone}</a>`
+    : "";
+
+  const addressRow = service.address
+    ? `<p style="font-size:11px;color:#475569;margin:2px 0 0;line-height:1.4">${service.address}</p>`
+    : "";
+
+  const demoRow = service.is_demo
+    ? `<span style="display:inline-block;margin-top:4px;padding:1px 6px;border-radius:9px;
+         background:#fef3c7;color:#92400e;font-size:9px;font-weight:700;">Demo data</span>`
+    : "";
+
+  return `
+    <div style="font-family:system-ui,sans-serif;min-width:180px;max-width:220px">
+      <p style="font-weight:700;font-size:13px;margin:0 0 2px;color:#0f172a;line-clamp:2">
+        ${service.name}
+      </p>
+      <span style="display:inline-block;padding:1px 7px;border-radius:99px;
+        background:${color}20;color:${color};border:1px solid ${color}40;
+        font-size:10px;font-weight:700;">${label}</span>
+      <p style="font-size:11px;color:#64748b;margin:4px 0 0">📍 ${distLabel}</p>
+      ${addressRow}
+      ${phoneRow}
+      ${demoRow}
+      <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer"
+        style="display:inline-block;margin-top:6px;padding:4px 10px;border-radius:7px;
+          background:#2563eb;color:#fff;font-size:11px;font-weight:600;text-decoration:none;">
+        Directions ↗
+      </a>
+    </div>`;
+}
+
+// ── Component ─────────────────────────────────────────────────────────────
 
 export default function NearbyMap({
   userLocation,
@@ -70,66 +120,68 @@ export default function NearbyMap({
   onLocateMe,
   className = "",
 }: NearbyMapProps) {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<LeafletMap | null>(null);
+  const containerRef      = useRef<HTMLDivElement>(null);
+  const mapRef            = useRef<LeafletMap | null>(null);
   const serviceMarkersRef = useRef<Map<string, LeafletMarker>>(new Map());
-  const userMarkerRef = useRef<LeafletMarker | null>(null);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
-  // Keep a ref of userLocation so the services effect always has the latest value
-  const userLocationRef = useRef<UserLocation | null>(userLocation);
-  useEffect(() => {
-    userLocationRef.current = userLocation;
-  }, [userLocation]);
+  const userMarkerRef     = useRef<LeafletMarker | null>(null);
+  const roRef             = useRef<ResizeObserver | null>(null);
+  const userLocRef        = useRef<UserLocation | null>(userLocation);
+  useEffect(() => { userLocRef.current = userLocation; }, [userLocation]);
 
-  // ── Initialise map once on mount ────────────────────────────────────────
+  // ── Init map (once) ─────────────────────────────────────────────────────
   useEffect(() => {
-    if (mapRef.current || !mapContainerRef.current) return;
-
+    if (mapRef.current || !containerRef.current) return;
     let cancelled = false;
 
     (async () => {
       const L = (await import("leaflet")).default;
 
-      // Fix default icon paths broken by Next.js bundler
+      // Patch broken default icon paths under Next.js
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       delete (L.Icon.Default.prototype as any)._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-        iconUrl:        "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-        shadowUrl:      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconUrl:       "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        shadowUrl:     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
       });
 
-      if (cancelled || !mapContainerRef.current) return;
+      if (cancelled || !containerRef.current) return;
 
-      const initialCenter: [number, number] = userLocationRef.current
-        ? [userLocationRef.current.latitude, userLocationRef.current.longitude]
-        : [20, 78]; // Fallback: India centre
+      const center: [number, number] = userLocRef.current
+        ? [userLocRef.current.latitude, userLocRef.current.longitude]
+        : [20, 78]; // India fallback
 
-      const map = L.map(mapContainerRef.current, {
-        center: initialCenter,
-        zoom: userLocationRef.current ? 13 : 5,
+      const map = L.map(containerRef.current, {
+        center,
+        zoom: userLocRef.current ? 13 : 5,
         zoomControl: true,
         attributionControl: true,
       });
 
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19,
       }).addTo(map);
 
-      // Legend
+      // ── Legend ────────────────────────────────────────────────────────
       const legend = new L.Control({ position: "bottomright" });
       legend.onAdd = () => {
         const div = L.DomUtil.create("div");
         div.innerHTML = `
-          <div style="background:white;padding:8px 12px;border-radius:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.12);font-size:11px;font-weight:600;
-            font-family:system-ui,sans-serif;line-height:1.8;">
-            <div style="color:#374151;margin-bottom:4px;font-weight:700">Legend</div>
-            <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2563eb;margin-right:6px;"></span>Hospital</div>
-            <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#16a34a;margin-right:6px;"></span>Pharmacy</div>
-            <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#dc2626;margin-right:6px;"></span>Ambulance</div>
-            <div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#2563eb;border:2px solid #fff;box-shadow:0 0 0 3px rgba(37,99,235,0.3);margin-right:6px;"></span>You</div>
+          <div style="background:#fff;padding:8px 12px;border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:11px;font-weight:600;
+            font-family:system-ui,sans-serif;line-height:1.9">
+            <div style="color:#1e293b;font-weight:700;margin-bottom:2px">Legend</div>
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;
+              background:#2563eb;margin-right:5px"></span>Hospital</div>
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;
+              background:#16a34a;margin-right:5px"></span>Pharmacy</div>
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;
+              background:#dc2626;margin-right:5px"></span>Ambulance</div>
+            <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;
+              background:#2563eb;border:2px solid #fff;
+              box-shadow:0 0 0 2px rgba(37,99,235,.35);margin-right:5px"></span>You</div>
           </div>`;
         return div;
       };
@@ -137,35 +189,25 @@ export default function NearbyMap({
 
       mapRef.current = map;
 
-      // ── ResizeObserver: call invalidateSize when container resizes ────
-      // This is the key fix for the blank-map bug: when the parent's CSS height
-      // resolves (e.g. after hydration or layout shift), Leaflet needs to
-      // recalculate tile coverage.
-      if (typeof ResizeObserver !== "undefined" && mapContainerRef.current) {
-        const ro = new ResizeObserver(() => {
-          mapRef.current?.invalidateSize();
-        });
-        ro.observe(mapContainerRef.current);
-        resizeObserverRef.current = ro;
+      // ── ResizeObserver keeps Leaflet in sync with CSS layout ──────────
+      if (typeof ResizeObserver !== "undefined" && containerRef.current) {
+        const ro = new ResizeObserver(() => mapRef.current?.invalidateSize());
+        ro.observe(containerRef.current);
+        roRef.current = ro;
       }
 
-      // Also call once immediately after mount so tiles render on first load
-      // even if no resize event fires.
-      setTimeout(() => {
-        mapRef.current?.invalidateSize();
-      }, 100);
+      // Deferred first invalidate — catches the case where tiles haven't
+      // rendered because the container size was 0 at mount time.
+      setTimeout(() => mapRef.current?.invalidateSize(), 120);
     })();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Update user location marker ──────────────────────────────────────────
+  // ── User location marker ────────────────────────────────────────────────
   useEffect(() => {
     if (!mapRef.current || !userLocation) return;
-
     (async () => {
       const L = (await import("leaflet")).default;
       const map = mapRef.current!;
@@ -177,85 +219,59 @@ export default function NearbyMap({
         userMarkerRef.current = L.marker(
           [userLocation.latitude, userLocation.longitude],
           { icon, zIndexOffset: 1000 }
-        )
-          .bindPopup("<b>You are here</b>")
-          .addTo(map);
+        ).bindPopup("<b>You are here</b>").addTo(map);
 
-        // Pan to user location when it first becomes available
         map.setView([userLocation.latitude, userLocation.longitude], 13, { animate: true });
       }
-
-      // Invalidate after panning to ensure tiles cover the new view
       map.invalidateSize();
     })();
   }, [userLocation]);
 
-  // ── Update service markers whenever the services list changes ────────────
+  // ── Service markers ─────────────────────────────────────────────────────
   useEffect(() => {
     if (!mapRef.current) return;
-
     (async () => {
       const L = (await import("leaflet")).default;
       const map = mapRef.current!;
-      const prevMarkers = serviceMarkersRef.current;
+      const prev = serviceMarkersRef.current;
       const nextIds = new Set(services.map((s) => s.id));
 
-      // Remove markers for services no longer in the list
-      for (const [id, marker] of prevMarkers) {
-        if (!nextIds.has(id)) {
-          marker.remove();
-          prevMarkers.delete(id);
-        }
+      // Remove stale markers
+      for (const [id, marker] of prev) {
+        if (!nextIds.has(id)) { marker.remove(); prev.delete(id); }
       }
 
-      // Add markers for new services
+      // Add new markers
       for (const service of services) {
-        if (prevMarkers.has(service.id)) continue;
-
+        if (prev.has(service.id)) continue;
         const icon = createServiceIcon(L, service.category);
-        const label =
-          service.category.charAt(0).toUpperCase() + service.category.slice(1);
-
-        const popupContent = `
-          <div style="font-family:system-ui,sans-serif;min-width:160px">
-            <p style="font-weight:700;font-size:13px;margin:0 0 4px">${service.name}</p>
-            <p style="font-size:11px;color:#64748b;margin:0 0 2px">${label}</p>
-            ${service.address ? `<p style="font-size:11px;color:#374151;margin:0">${service.address}</p>` : ""}
-          </div>`;
-
         const marker = L.marker([service.latitude, service.longitude], { icon })
-          .bindPopup(popupContent)
+          .bindPopup(makePopupHtml(service), { maxWidth: 240 })
           .addTo(map);
-
         marker.on("click", () => onServiceSelect(service));
-        prevMarkers.set(service.id, marker);
+        prev.set(service.id, marker);
       }
 
-      // Fit map bounds to show all markers (user + services)
-      if (services.length > 0 || userLocationRef.current) {
-        const allPoints: [number, number][] = [];
-        const loc = userLocationRef.current;
-        if (loc) allPoints.push([loc.latitude, loc.longitude]);
-        services.forEach((s) => allPoints.push([s.latitude, s.longitude]));
+      // Fit bounds to include user + all service markers
+      const allPoints: [number, number][] = [];
+      const loc = userLocRef.current;
+      if (loc) allPoints.push([loc.latitude, loc.longitude]);
+      services.forEach((s) => allPoints.push([s.latitude, s.longitude]));
 
-        if (allPoints.length > 1) {
-          map.fitBounds(allPoints, { padding: [40, 40], maxZoom: 15 });
-        } else if (allPoints.length === 1) {
-          map.setView(allPoints[0], 14);
-        }
-
-        // Ensure tiles render after bounds change
-        map.invalidateSize();
+      if (allPoints.length > 1) {
+        map.fitBounds(allPoints, { padding: [40, 40], maxZoom: 15 });
+      } else if (allPoints.length === 1) {
+        map.setView(allPoints[0], 14);
       }
+
+      map.invalidateSize();
     })();
-    // onServiceSelect is stable (wrapped in useCallback in parent)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [services]);
 
-  // ── Pan to selected service and open its popup ──────────────────────────
+  // ── Pan to selected service ─────────────────────────────────────────────
   useEffect(() => {
     if (!selectedService || !mapRef.current) return;
-
     const marker = serviceMarkersRef.current.get(selectedService.id);
     if (marker) {
       mapRef.current.setView(
@@ -267,13 +283,12 @@ export default function NearbyMap({
     }
   }, [selectedService]);
 
-  // ── Locate-me handler ───────────────────────────────────────────────────
+  // ── Locate-me button ────────────────────────────────────────────────────
   const handleLocateMe = useCallback(() => {
     if (!mapRef.current) { onLocateMe(); return; }
-
-    if (userLocationRef.current) {
+    if (userLocRef.current) {
       mapRef.current.setView(
-        [userLocationRef.current.latitude, userLocationRef.current.longitude],
+        [userLocRef.current.latitude, userLocRef.current.longitude],
         15,
         { animate: true }
       );
@@ -282,51 +297,42 @@ export default function NearbyMap({
     }
   }, [onLocateMe]);
 
-  // ── Cleanup on unmount ─────────────────────────────────────────────────
+  // ── Cleanup ─────────────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
-      resizeObserverRef.current?.disconnect();
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      roRef.current?.disconnect();
+      mapRef.current?.remove();
+      mapRef.current = null;
     };
   }, []);
 
   return (
-    <div className={`relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm ${className}`}>
-      {/* The map container needs an explicit height — Leaflet cannot render
-          inside a zero-height container. The parent page provides h-72/h-96/h-full
-          via the className prop; the min-h here is a safety net. */}
+    <div
+      className={`relative rounded-2xl overflow-hidden border border-slate-200 shadow-sm ${className}`}
+      style={{ minHeight: 320 }}
+    >
       <div
-        ref={mapContainerRef}
-        className="w-full h-full min-h-[300px]"
+        ref={containerRef}
+        className="w-full h-full"
+        style={{ minHeight: 320 }}
         role="application"
         aria-label="Map showing nearby medical services"
       />
 
-      {/* Locate Me button */}
+      {/* Locate-me button */}
       <button
         type="button"
         onClick={handleLocateMe}
-        className="absolute top-3 right-3 z-[1000] bg-white hover:bg-slate-50 border border-slate-200 rounded-xl p-2.5 shadow-md transition-colors focus-visible:outline-2 focus-visible:outline-blue-500"
+        className="absolute top-3 right-3 z-[1000] bg-white hover:bg-slate-50
+          border border-slate-200 rounded-xl p-2.5 shadow-md transition-colors
+          focus-visible:outline-2 focus-visible:outline-blue-500"
         aria-label="Centre map on my location"
-        title="Centre on my location"
+        title="My location"
       >
-        <svg
-          className="w-4 h-4 text-slate-700"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          aria-hidden="true"
-        >
+        <svg className="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="3" strokeWidth="2" />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 2v3m0 14v3M2 12h3m14 0h3"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+            d="M12 2v3m0 14v3M2 12h3m14 0h3" />
         </svg>
       </button>
     </div>

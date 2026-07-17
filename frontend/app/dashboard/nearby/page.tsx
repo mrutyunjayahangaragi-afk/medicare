@@ -1,12 +1,23 @@
 "use client";
 
 /**
- * /dashboard/nearby — Nearby Hospitals, Pharmacies & Ambulance Services
+ * /dashboard/nearby — Nearby Medical Services
  *
- * Layout:
- *   Desktop: [Map (left, ~55%)] [Sidebar: search + filters + cards (right, ~45%)]
- *   Mobile:  Search → Filters → Map → Cards (stacked)
+ * State machine:
+ *   idle → requesting (geolocation in flight)
+ *        → success    (location acquired, services loading / loaded)
+ *        → denied | timeout | unavailable | unsupported
+ *
+ * Live flow:
+ *   Browser Geolocation → FastAPI /api/v1/nearby/services → Geoapify → Leaflet map + cards
+ *
+ * Rules:
+ *   - "Nothing found nearby" shown ONLY when location=success AND API succeeded AND list is empty.
+ *   - API error shows "temporarily unavailable" — never a false empty state.
+ *   - Previous request is aborted when location/category/radius changes.
+ *   - Geoapify key never in browser — all requests go through FastAPI.
  */
+
 import {
   useState,
   useEffect,
@@ -30,8 +41,9 @@ import EmptyNearbyState from "@/components/nearby/EmptyNearbyState";
 import ServiceDetailsDialog from "@/components/nearby/ServiceDetailsDialog";
 
 import { LocationService } from "@/lib/nearby/LocationService";
-import { NearbyService as NearbyServiceLib } from "@/lib/nearby/NearbyService";
+import { NearbyService as NearbyServiceLib, NearbyApiError } from "@/lib/nearby/NearbyService";
 import { DistanceCalculator } from "@/lib/nearby/DistanceCalculator";
+import { useToast } from "@/components/ui/Toast";
 
 import type {
   NearbyService,
@@ -41,34 +53,39 @@ import type {
   ServiceCategory,
   DistanceFilter,
 } from "@/types/nearby";
-import { useToast } from "@/components/ui/Toast";
 
-// ── Lazy-load map (no SSR) ─────────────────────────────────────────────────
-const NearbyMap = dynamic(
-  () => import("@/components/nearby/NearbyMap"),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="w-full h-full bg-slate-100 rounded-2xl animate-pulse flex items-center justify-center">
-        <div className="flex flex-col items-center gap-2 text-slate-400">
-          <MapPin className="w-8 h-8" />
-          <span className="text-xs font-medium">Loading map…</span>
-        </div>
+// ── Lazy-load Leaflet map (no SSR) ────────────────────────────────────────
+const NearbyMap = dynamic(() => import("@/components/nearby/NearbyMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full bg-slate-100 rounded-2xl animate-pulse flex items-center justify-center min-h-[320px]">
+      <div className="flex flex-col items-center gap-2 text-slate-400">
+        <MapPin className="w-8 h-8" />
+        <span className="text-xs font-medium">Loading map…</span>
       </div>
-    ),
-  }
-);
+    </div>
+  ),
+});
 
-// ── Session cache (clears on page refresh) ────────────────────────────────
-let sessionServices: NearbyService[] | null = null;
-let sessionLocation: UserLocation | null = null;
+// ── Distance filter → radius sent to backend ──────────────────────────────
+const DIST_TO_RADIUS_KM: Record<DistanceFilter, number> = {
+  all:   20,
+  "2km":  2,
+  "5km":  5,
+  "10km": 10,
+};
 
-// ── Default filters ────────────────────────────────────────────────────────
+// ── Default filters ───────────────────────────────────────────────────────
 const DEFAULT_FILTERS: NearbyFilters = {
   category: "all",
   distance: "all",
   search: "",
 };
+
+// ── Module-level session cache (clears on hard refresh) ───────────────────
+let _cachedLocation: UserLocation | null = null;
+let _cachedServices: NearbyService[] | null = null;
+let _cachedFilters: Pick<NearbyFilters, "category" | "distance"> | null = null;
 
 function NearbyPageInner() {
   const { toast } = useToast();
@@ -76,12 +93,8 @@ function NearbyPageInner() {
 
   // ── State ────────────────────────────────────────────────────────────────
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
-  const [userLocation, setUserLocation] = useState<UserLocation | null>(
-    sessionLocation
-  );
-  const [allServices, setAllServices] = useState<NearbyService[]>(
-    sessionServices ?? []
-  );
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(_cachedLocation);
+  const [allServices, setAllServices] = useState<NearbyService[]>(_cachedServices ?? []);
   const [filters, setFilters] = useState<NearbyFilters>(() => {
     const typeParam = searchParams.get("type") as ServiceCategory | null;
     return {
@@ -92,45 +105,58 @@ function NearbyPageInner() {
           : "all",
     };
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const [selectedService, setSelectedService] =
-    useState<NearbyService | null>(null);
-  const [dialogService, setDialogService] = useState<NearbyService | null>(
-    null
-  );
-  const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Debounce the search query
+  const [isLoading, setIsLoading]   = useState(false);
+  const [serviceError, setServiceError] = useState<string | null>(null);
+  const [selectedService, setSelectedService] = useState<NearbyService | null>(null);
+  const [dialogService, setDialogService]     = useState<NearbyService | null>(null);
+  const [dialogOpen, setDialogOpen]           = useState(false);
+
+  // Debounce search
   const deferredSearch = useDeferredValue(filters.search);
-
-  // Applied filters use deferred search to avoid re-filtering on every keystroke
   const appliedFilters: NearbyFilters = { ...filters, search: deferredSearch };
+
+  // Client-side filter (category chip and distance chip do a live re-fetch;
+  // search just filters the in-memory list)
   const filteredServices = NearbyServiceLib.filter(allServices, appliedFilters);
 
-  // Debounce timer ref — cleared on unmount to prevent state updates after unmount
+  // Abort controller for in-flight service requests
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Debounce timer for search input
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
+  useEffect(() => () => {
+    debounceRef.current && clearTimeout(debounceRef.current);
   }, []);
 
-  // ── Fetch nearby services ─────────────────────────────────────────────────
+  // ── Fetch services ───────────────────────────────────────────────────────
   const fetchServices = useCallback(
-    async (location: UserLocation) => {
+    async (
+      location: UserLocation,
+      category: ServiceCategory | "all",
+      distance: DistanceFilter
+    ) => {
+      // Cancel any previous request
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
       setIsLoading(true);
-      setHasError(false);
+      setServiceError(null);
+
+      const radiusKm = DIST_TO_RADIUS_KM[distance];
 
       try {
-        const services = await NearbyServiceLib.fetchAll(
+        const raw = await NearbyServiceLib.fetchAll(
           location.latitude,
           location.longitude,
-          10 // 10 km radius
+          radiusKm,
+          category,
+          controller.signal
         );
 
-        // Recalculate distance (normalised in API, but ensure accuracy)
-        const withDistance = services.map((s) => ({
+        // Recompute distance from actual user coords
+        const withDist = raw.map((s) => ({
           ...s,
           distance: DistanceCalculator.compute(
             location.latitude,
@@ -140,11 +166,24 @@ function NearbyPageInner() {
           ),
         }));
 
-        setAllServices(withDistance);
-        sessionServices = withDistance;
-      } catch {
-        setHasError(true);
-        toast("Failed to load nearby services. Please try again.", "error");
+        setAllServices(withDist);
+        _cachedServices = withDist;
+        _cachedFilters  = { category, distance };
+      } catch (err) {
+        if (err instanceof Error && err.name === "AbortError") return; // cancelled — ignore
+
+        let msg = "Nearby services are temporarily unavailable.";
+        if (err instanceof NearbyApiError) {
+          if (err.isNotConfigured) {
+            msg = "Nearby services are not configured on this server.";
+          } else if (err.isRateLimited) {
+            msg = "Too many requests. Please wait a moment and try again.";
+          } else if (err.isTimeout) {
+            msg = "The request timed out. Please try again.";
+          }
+        }
+        setServiceError(msg);
+        toast(msg, "error");
       } finally {
         setIsLoading(false);
       }
@@ -152,13 +191,14 @@ function NearbyPageInner() {
     [toast]
   );
 
-  // ── Acquire location ───────────────────────────────────────────────────────
+  // ── Acquire location ─────────────────────────────────────────────────────
   const acquireLocation = useCallback(async () => {
-    // Use cached location if available
-    if (sessionLocation) {
-      setUserLocation(sessionLocation);
+    if (_cachedLocation) {
+      setUserLocation(_cachedLocation);
       setLocationStatus("success");
-      if (!sessionServices) await fetchServices(sessionLocation);
+      if (!_cachedServices) {
+        await fetchServices(_cachedLocation, filters.category, filters.distance);
+      }
       return;
     }
 
@@ -168,55 +208,65 @@ function NearbyPageInner() {
 
     if (result.status === "success") {
       const loc = result.location;
+      _cachedLocation = loc;
       setUserLocation(loc);
       setLocationStatus("success");
-      sessionLocation = loc;
-      await fetchServices(loc);
+      await fetchServices(loc, filters.category, filters.distance);
     } else {
       setLocationStatus(result.status);
     }
-  }, [fetchServices]);
+  }, [fetchServices, filters.category, filters.distance]);
 
   // Auto-acquire on mount
   useEffect(() => {
-    if (locationStatus === "idle") {
-      acquireLocation();
-    }
+    if (locationStatus === "idle") acquireLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Manual location entry ─────────────────────────────────────────────────
+  // Re-fetch when category or distance filter changes (not search)
+  useEffect(() => {
+    if (!userLocation || locationStatus !== "success") return;
+    // Skip if filters haven't actually changed from the cached fetch
+    if (
+      _cachedFilters &&
+      _cachedFilters.category === filters.category &&
+      _cachedFilters.distance === filters.distance
+    ) return;
+
+    fetchServices(userLocation, filters.category, filters.distance);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.category, filters.distance]);
+
+  // ── Manual location ──────────────────────────────────────────────────────
   const handleManualLocation = useCallback(
     async (lat: number, lng: number) => {
       const loc: UserLocation = { latitude: lat, longitude: lng };
+      _cachedLocation = loc;
+      _cachedServices = null;
+      _cachedFilters  = null;
       setUserLocation(loc);
       setLocationStatus("success");
-      sessionLocation = loc;
-      sessionServices = null;
       setAllServices([]);
-      await fetchServices(loc);
+      await fetchServices(loc, filters.category, filters.distance);
     },
-    [fetchServices]
+    [fetchServices, filters.category, filters.distance]
   );
 
-  // ── Refresh ───────────────────────────────────────────────────────────────
+  // ── Refresh ──────────────────────────────────────────────────────────────
   const handleRefresh = useCallback(async () => {
+    _cachedServices = null;
+    _cachedFilters  = null;
     if (!userLocation) {
+      _cachedLocation = null;
       acquireLocation();
-      return;
+    } else {
+      await fetchServices(userLocation, filters.category, filters.distance);
     }
-    sessionServices = null;
-    setAllServices([]);
-    await fetchServices(userLocation);
-  }, [userLocation, fetchServices, acquireLocation]);
+  }, [userLocation, fetchServices, acquireLocation, filters.category, filters.distance]);
 
-  // ── Search with debounce ──────────────────────────────────────────────────
+  // ── Search ───────────────────────────────────────────────────────────────
   const handleSearchChange = useCallback((value: string) => {
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, search: value }));
-    }, 300);
-    // Update immediately for controlled input display
+    // Update immediately for the controlled input
     setFilters((prev) => ({ ...prev, search: value }));
   }, []);
 
@@ -241,41 +291,38 @@ function NearbyPageInner() {
 
   const handleLocateOnMap = useCallback((service: NearbyService) => {
     setSelectedService(service);
-    // On mobile, scroll to map
     document
       .getElementById("nearby-map-section")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  // ── Empty state logic ─────────────────────────────────────────────────────
+  // ── Empty/error state discriminator ──────────────────────────────────────
   function getEmptyReason() {
-    if (hasError) return "no-internet" as const;
+    if (serviceError) return "no-internet" as const;
     if (locationStatus !== "success") return "location-unavailable" as const;
-    if (filters.search.trim()) return "search-no-match" as const;
+    if (deferredSearch.trim()) return "search-no-match" as const;
     return "no-results" as const;
   }
 
-  // ── Count by category ─────────────────────────────────────────────────────
+  // ── Counts ───────────────────────────────────────────────────────────────
   const counts = {
-    hospital: allServices.filter((s) => s.category === "hospital").length,
-    pharmacy: allServices.filter((s) => s.category === "pharmacy").length,
+    hospital:  allServices.filter((s) => s.category === "hospital").length,
+    pharmacy:  allServices.filter((s) => s.category === "pharmacy").length,
     ambulance: allServices.filter((s) => s.category === "ambulance").length,
-    total: allServices.length,
+    total:     allServices.length,
   };
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Top nav */}
       <TopNavbar />
 
-      {/* Main */}
       <main
         id="main-content"
         className="flex-1 overflow-y-auto bg-slate-50/50"
         aria-label="Nearby Medical Services"
       >
-        {/* Page header */}
+        {/* Header */}
         <div className="px-4 sm:px-6 lg:px-8 py-4 border-b border-slate-100 bg-white">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
@@ -284,33 +331,35 @@ function NearbyPageInner() {
               </h1>
               <p className="text-xs text-slate-500 mt-0.5">
                 {locationStatus === "success" && !isLoading && counts.total > 0
-                  ? `${counts.total} services found — ${counts.hospital} hospitals, ${counts.pharmacy} pharmacies, ${counts.ambulance} ambulance stations`
+                  ? `${counts.total} services found — ${counts.hospital} hospital${counts.hospital !== 1 ? "s" : ""}, ${counts.pharmacy} pharmac${counts.pharmacy !== 1 ? "ies" : "y"}, ${counts.ambulance} emergency`
+                  : locationStatus === "requesting"
+                  ? "Detecting your location…"
                   : "Find hospitals, pharmacies and ambulance services near you"}
               </p>
             </div>
 
-            {/* Refresh */}
             <button
               type="button"
               onClick={handleRefresh}
               disabled={isLoading || locationStatus === "requesting"}
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:outline-2 focus-visible:outline-blue-500"
+              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold
+                text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50
+                disabled:opacity-50 disabled:cursor-not-allowed transition-colors
+                focus-visible:outline-2 focus-visible:outline-blue-500"
               aria-label="Refresh nearby services"
             >
-              {isLoading ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
-              ) : (
-                <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-              )}
+              {isLoading
+                ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                : <RefreshCw className="w-3.5 h-3.5" />}
               {isLoading ? "Loading…" : "Refresh"}
             </button>
           </div>
         </div>
 
-        {/* Body — desktop: side-by-side, mobile: stacked */}
+        {/* Body */}
         <div className="flex flex-col lg:flex-row gap-0 h-full">
 
-          {/* ── Map section ─────────────────────────────────────────────── */}
+          {/* Map */}
           <section
             id="nearby-map-section"
             aria-label="Map"
@@ -328,14 +377,14 @@ function NearbyPageInner() {
             </div>
           </section>
 
-          {/* ── Sidebar: controls + list ─────────────────────────────────── */}
+          {/* Sidebar */}
           <aside
             aria-label="Service list and filters"
             className="w-full lg:w-[420px] xl:w-[460px] flex-shrink-0 flex flex-col overflow-hidden"
           >
             {/* Sticky controls */}
-            <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm border-b border-slate-100 px-4 sm:px-6 py-4 space-y-3">
-              {/* Location status (compact when success) */}
+            <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur-sm
+              border-b border-slate-100 px-4 sm:px-6 py-4 space-y-3">
               {locationStatus !== "success" && (
                 <LocationCard
                   status={locationStatus}
@@ -344,14 +393,7 @@ function NearbyPageInner() {
                   onManualSubmit={handleManualLocation}
                 />
               )}
-
-              {/* Search */}
-              <SearchBar
-                value={filters.search}
-                onChange={handleSearchChange}
-              />
-
-              {/* Filters */}
+              <SearchBar value={filters.search} onChange={handleSearchChange} />
               <FilterBar
                 filters={filters}
                 onCategoryChange={handleCategoryChange}
@@ -359,7 +401,7 @@ function NearbyPageInner() {
               />
             </div>
 
-            {/* Scrollable list */}
+            {/* Results list */}
             <div
               className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-3 pb-24 lg:pb-6"
               role="region"
@@ -367,17 +409,13 @@ function NearbyPageInner() {
               aria-live="polite"
               aria-busy={isLoading ? "true" : "false"}
             >
-              {/* Loading skeletons */}
               {isLoading && <NearbySkeleton />}
 
-              {/* Results */}
               {!isLoading && filteredServices.length > 0 && (
                 <>
                   <p className="text-xs font-semibold text-slate-500 mb-1">
-                    {filteredServices.length} result
-                    {filteredServices.length !== 1 ? "s" : ""}
-                    {appliedFilters.category !== "all" &&
-                      ` · ${appliedFilters.category}`}
+                    {filteredServices.length} result{filteredServices.length !== 1 ? "s" : ""}
+                    {appliedFilters.category !== "all" && ` · ${appliedFilters.category}`}
                   </p>
                   {filteredServices.map((service, index) => (
                     <ServiceCard
@@ -392,31 +430,33 @@ function NearbyPageInner() {
                 </>
               )}
 
-              {/* Empty / error states */}
+              {/* Empty / error states — only shown when not loading */}
               {!isLoading && filteredServices.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <EmptyNearbyState
-                    reason={getEmptyReason()}
-                    onRetry={
-                      hasError
-                        ? handleRefresh
-                        : locationStatus !== "success"
-                        ? acquireLocation
-                        : undefined
-                    }
-                  />
-                </motion.div>
+                /* Do NOT show "nothing found" while location is still loading */
+                locationStatus === "requesting" ? null : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <EmptyNearbyState
+                      reason={getEmptyReason()}
+                      onRetry={
+                        serviceError
+                          ? handleRefresh
+                          : locationStatus !== "success"
+                          ? acquireLocation
+                          : undefined
+                      }
+                    />
+                  </motion.div>
+                )
               )}
             </div>
           </aside>
         </div>
       </main>
 
-      {/* Service details dialog */}
       <ServiceDetailsDialog
         service={dialogService}
         open={dialogOpen}
@@ -426,7 +466,6 @@ function NearbyPageInner() {
   );
 }
 
-// Wrap in Suspense — required because NearbyPageInner calls useSearchParams()
 export default function NearbyPage() {
   return (
     <Suspense
