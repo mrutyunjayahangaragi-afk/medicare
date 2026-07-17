@@ -146,9 +146,10 @@ class Settings(BaseSettings):
     @field_validator("google_places_api_key")
     @classmethod
     def _validate_google_places_key(cls, v: str | None) -> str | None:
-        if v is not None and not v.strip():
-            raise ValueError("google_places_api_key must not be empty when provided")
-        return v.strip() if v else None
+        # Empty string means "not set" — treat same as None (key is optional)
+        if v is None or v.strip() == "":
+            return None
+        return v.strip()
 
     @field_validator("google_places_timeout_seconds")
     @classmethod

@@ -32,12 +32,14 @@ CATEGORY_MAP: dict[str, list[str]] = {
         "healthcare.hospital",
         "healthcare.clinic_or_praxis",
     ],
+    # Geoapify tags pharmacies under BOTH of these categories depending on region.
+    # Including both prevents the "0 results" failure mode.
     "pharmacy": [
         "healthcare.pharmacy",
+        "commercial.health_and_beauty.pharmacy",
     ],
-    # Only real ambulance/emergency categories — no hospital fallback here.
-    # Geoapify returns 0 results for these in many regions; that is expected.
-    # The Supabase org fallback in the route layer covers the gap.
+    # Real ambulance/emergency categories — Geoapify returns sparse data in most
+    # regions (0–1 results). The Supabase fallback in the route covers the gap.
     "ambulance": [
         "emergency",
         "emergency.ambulance_station",
@@ -53,6 +55,7 @@ _CATEGORY_TO_TYPE: list[tuple[str, str]] = [
     ("emergency", "ambulance"),
     ("ambulance", "ambulance"),
     ("pharmacy", "pharmacy"),
+    ("health_and_beauty.pharmacy", "pharmacy"),
     ("hospital", "hospital"),
     ("clinic", "hospital"),
 ]
@@ -165,6 +168,9 @@ def _normalize_feature(
         "phone": props.get("contact", {}).get("phone") or props.get("phone") or None,
         "website": props.get("contact", {}).get("website") or props.get("website") or None,
         "opening_hours": props.get("opening_hours") or None,
+        "is_open": None,
+        "google_maps_uri": None,
+        "source": "geoapify",
         "is_demo": False,
     }
 
@@ -321,7 +327,7 @@ def get_ambulance_orgs_from_supabase(
             client.table("organizations")
             .select("id, name, organization_type, phone, address, latitude, longitude")
             .eq("is_verified", True)
-            .in_("organization_type", ["ambulance", "emergency", "emergency_services"])
+            .in_("organization_type", ["ambulance_service"])
             .not_.is_("latitude", "null")
             .not_.is_("longitude", "null")
             .limit(100)
