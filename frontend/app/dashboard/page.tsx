@@ -79,8 +79,14 @@ export default async function DashboardPage() {
     user.identities?.some((id) => id.provider === "google");
 
   if (!isGoogleUser) {
-    // Email/password users must be verified to access the dashboard.
-    if (!profileData || !profileData.is_verified) {
+    // Email/password users must have confirmed their email address.
+    // is_verified is set to true by auth/callback after email confirmation.
+    // We also trust email_confirmed_at from the Supabase JWT as a fallback,
+    // so users who confirmed but haven't gone through the callback yet still
+    // get in rather than being sent back to login in a loop.
+    const emailConfirmed = Boolean(user.email_confirmed_at);
+    const profileVerified = Boolean(profileData?.is_verified);
+    if (!emailConfirmed && !profileVerified) {
       redirect("/login");
     }
   }

@@ -1,15 +1,30 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { AnimatePresence, useReducedMotion } from "framer-motion";
-import { useSearchParams } from "next/navigation";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Loader2, ShieldCheck, Mail } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { type LoginPortal } from "@/types/auth";
+import { getAuthErrorMessage } from "@/lib/auth/errors";
 import PortalSelector from "./PortalSelector";
 import AuthLayout from "./AuthLayout";
+import AuthInput from "./AuthInput";
+import PasswordInput from "./PasswordInput";
 
+// ── Zod schema ─────────────────────────────────────────────────────────
+const loginSchema = z.object({
+  email:    z.string().min(1, "Email is required").email("Enter a valid email address"),
+  password: z.string().min(1, "Password is required").min(8, "Password must be at least 8 characters"),
+  remember: z.boolean().optional(),
+});
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+// ── Google logo SVG ────────────────────────────────────────────────────
 function GoogleLogo() {
   return (
     <svg width="20" height="20" viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -22,52 +37,100 @@ function GoogleLogo() {
 }
 
 function getQueryError(err: string | null): string | null {
-  if (err === "oauth_failed") return "Google sign-in failed. Please try again.";
-  if (err === "invalid_link") return "This link is invalid.";
-  if (err === "link_expired") return "This link has expired.";
-  if (err === "unauthorized") return "Your account is not authorized for the selected portal.";
-  if (err === "pending") return "Your application is still under review.";
-  if (err === "rejected") return "Your application has been rejected.";
-  if (err === "suspended") return "Your access has been suspended. Contact support.";
+  if (err === "oauth_failed")  return "Google sign-in failed. Please try again.";
+  if (err === "invalid_link")  return "This link is invalid.";
+  if (err === "link_expired")  return "This link has expired.";
+  if (err === "unauthorized")  return "Your account is not authorized for the selected portal.";
+  if (err === "pending")       return "Your application is still under review.";
+  if (err === "rejected")      return "Your application has been rejected.";
+  if (err === "suspended")     return "Your access has been suspended. Contact support.";
   return null;
 }
 
 export default function LoginForm() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedPortal, setSelectedPortal] = useState<LoginPortal>("user");
-  const shouldReduceMotion = useReducedMotion();
+  const router = useRouter();
   const searchParams = useSearchParams();
+  const shouldReduceMotion = useReducedMotion();
 
-  const queryError = getQueryError(searchParams.get("error"));
+  // Shared state
+  const [selectedPortal, setSelectedPortal] = useState<LoginPortal>("user");
+  const [error, setError]                   = useState<string | null>(null);
+
+  // Email/password state
+  const [emailLoading, setEmailLoading]     = useState(false);
+
+  // Google state
+  const [googleLoading, setGoogleLoading]   = useState(false);
+
+  const queryError   = getQueryError(searchParams.get("error"));
   const displayError = error ?? queryError;
+  const nextUrl      = searchParams.get("next") ?? "/dashboard";
 
-  const handleGoogleLogin = async () => {
-    setLoading(true);
+  // ── React Hook Form ─────────────────────────────────────────────────
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<LoginFormValues>({ resolver: zodResolver(loginSchema) });
+
+  const passwordValue = watch("password");
+
+  // ── Email / password login ──────────────────────────────────────────
+  const onEmailLogin = async (data: LoginFormValues) => {
+    setEmailLoading(true);
     setError(null);
 
     try {
       const supabase = createClient();
-      const { data, error: oauthError } = await supabase.auth.signInWithOAuth({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email:    data.email.trim(),
+        password: data.password,
+      });
+
+      if (signInError) {
+        setError(getAuthErrorMessage(signInError));
+        return;
+      }
+
+      // Navigate to the intended destination (or /dashboard)
+      router.push(nextUrl);
+      router.refresh();
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+    } finally {
+      setEmailLoading(false);
+    }
+  };
+
+  // ── Google login ────────────────────────────────────────────────────
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    setError(null);
+
+    try {
+      const supabase = createClient();
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback?portal=${selectedPortal}`,
         },
       });
       if (oauthError) throw oauthError;
-      // Browser redirects on success — no further action
-    } catch (err) {
-      console.error("[AUTH] Google login error:", err);
-      setLoading(false);
+      // Browser redirects — no further action needed
+    } catch {
+      setGoogleLoading(false);
       setError("Google sign-in failed. Please try again.");
     }
   };
 
+  const isAnyLoading = emailLoading || googleLoading;
+
   return (
     <AuthLayout variant="login">
       <div className="w-full">
-        {/* Heading */}
-        <div className="mb-8">
+        {/* ── Heading ── */}
+        <div className="mb-7">
           <h1 className="text-3xl font-black text-slate-900 leading-tight mb-2">
             Welcome Back!
           </h1>
@@ -76,53 +139,116 @@ export default function LoginForm() {
           </p>
         </div>
 
-        {/* Error banner */}
+        {/* ── Error banner ── */}
         <AnimatePresence initial={false}>
           {displayError && (
             <div
               role="alert"
-              className="mb-6 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium"
+              className="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium"
             >
               {displayError}
             </div>
           )}
         </AnimatePresence>
 
-        {/* Portal Selector */}
+        {/* ── Portal Selector ── */}
         <div className="mb-6">
           <PortalSelector value={selectedPortal} onChange={setSelectedPortal} />
         </div>
 
-        {/* Google button */}
+        {/* ── Email / Password form ── */}
+        <form
+          onSubmit={handleSubmit(onEmailLogin)}
+          noValidate
+          aria-label="Email and password login form"
+          className="flex flex-col gap-4"
+        >
+          <AuthInput
+            label="Email Address"
+            type="email"
+            placeholder="you@example.com"
+            autoComplete="email"
+            required
+            error={errors.email?.message}
+            {...register("email")}
+          />
+
+          <PasswordInput
+            label="Password"
+            placeholder="Enter your password"
+            autoComplete="current-password"
+            required
+            watchValue={passwordValue}
+            error={errors.password?.message}
+            {...register("password")}
+          />
+
+          {/* Remember me + Forgot password row */}
+          <div className="flex items-center justify-between gap-4 -mt-1">
+            <label className="flex items-center gap-2 cursor-pointer group select-none">
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-slate-300 accent-[#E53935] cursor-pointer"
+                {...register("remember")}
+              />
+              <span className="text-sm text-slate-600 group-hover:text-slate-800 transition-colors">
+                Remember me
+              </span>
+            </label>
+            <Link
+              href="/forgot-password"
+              className="text-sm font-semibold text-red-500 hover:text-red-600 hover:underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400/50 rounded"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          {/* Login button */}
+          <button
+            type="submit"
+            disabled={isAnyLoading}
+            className="w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-[#E53935] hover:bg-[#C62828] disabled:bg-red-300 disabled:cursor-not-allowed text-white text-sm font-bold rounded-xl shadow-sm shadow-red-200 transition-colors duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E53935]/50"
+            aria-label="Sign in with email and password"
+          >
+            {emailLoading ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Signing in…</>
+            ) : (
+              <><Mail className="w-4 h-4" /> Sign In</>
+            )}
+          </button>
+        </form>
+
+        {/* ── OR divider ── */}
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-slate-200" />
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">or</span>
+          <div className="flex-1 h-px bg-slate-200" />
+        </div>
+
+        {/* ── Google button (unchanged) ── */}
         <button
           type="button"
           onClick={handleGoogleLogin}
-          disabled={loading}
+          disabled={isAnyLoading}
           className="w-full flex items-center justify-center gap-3 px-5 py-3.5 bg-white border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 disabled:opacity-60 disabled:cursor-not-allowed rounded-xl text-sm font-bold text-slate-800 transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4285F4]/50"
           aria-label="Sign in with Google"
         >
-          {loading ? (
-            <>
-              <Loader2 className="w-4.5 h-4.5 animate-spin text-slate-400" />
-              <span>Connecting to Google…</span>
-            </>
+          {googleLoading ? (
+            <><Loader2 className="w-4 h-4 animate-spin text-slate-400" /><span>Connecting to Google…</span></>
           ) : (
-            <>
-              <GoogleLogo />
-              <span>Continue with Google</span>
-            </>
+            <><GoogleLogo /><span>Continue with Google</span></>
           )}
         </button>
 
-        {/* Trust indicators */}
-        <div className="flex items-center justify-center gap-1.5 mt-6 text-xs text-slate-400">
+        {/* ── Trust indicator ── */}
+        <div className="flex items-center justify-center gap-1.5 mt-5 text-xs text-slate-400">
           <ShieldCheck className="w-3.5 h-3.5 text-green-500 flex-shrink-0" aria-hidden="true" />
-          <span>Secured by Supabase · No password needed</span>
+          <span>Secured by Supabase · Your data is protected</span>
         </div>
 
-        {/* Terms */}
+        {/* ── Terms ── */}
         <p className="text-center text-xs text-slate-400 mt-4 leading-relaxed">
-          By continuing, you agree to our{" "}
+          By signing in, you agree to our{" "}
           <Link href="/terms" className="text-red-500 font-semibold hover:underline">
             Terms of Service
           </Link>{" "}
@@ -132,9 +258,9 @@ export default function LoginForm() {
           </Link>
         </p>
 
-        {/* Register link */}
-        <p className="text-center text-sm text-slate-600 mt-6">
-          Don't have an account?{" "}
+        {/* ── Register link ── */}
+        <p className="text-center text-sm text-slate-600 mt-5">
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-red-500 font-semibold hover:underline">
             Sign up
           </Link>
