@@ -26,10 +26,11 @@ export default async function AdminLayout({
     .single();
 
   if (!profile || profile.role !== "admin") {
-    // Redirect to appropriate portal based on role
-    if (profile?.role === "hospital") {
+    // Redirect to the correct portal based on the user's actual role
+    const role = profile?.role as string | undefined;
+    if (role === "hospital_staff" || role === "hospital") {
       redirect("/hospital");
-    } else if (profile?.role === "responder") {
+    } else if (role === "responder" || role === "volunteer") {
       redirect("/responder");
     } else {
       redirect("/dashboard");

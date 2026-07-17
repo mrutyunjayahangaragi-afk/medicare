@@ -93,8 +93,42 @@ export default function LoginForm() {
         return;
       }
 
-      // Navigate to the intended destination (or /dashboard)
-      router.push(nextUrl);
+      // Resolve the authenticated user's real role from Supabase and
+      // redirect to the correct portal. Never trust the portal the user
+      // selected on the login form — always use the DB-stored role.
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setError("Session error. Please try again.");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      const role = (profile?.role ?? "user") as string;
+
+      // Map role → portal path (mirrors getRoleDashboardPath on the server)
+      let destination: string;
+      if (role === "admin")                             destination = "/admin";
+      else if (role === "hospital_staff" || role === "hospital") destination = "/hospital";
+      else if (role === "responder" || role === "volunteer")     destination = "/responder";
+      else                                              destination = "/dashboard";
+
+      // Only honour a safe ?next= param when the user is actually authorized
+      const rawNext = nextUrl !== "/dashboard" ? nextUrl : null;
+      if (rawNext) {
+        const allowedForRole =
+          (rawNext.startsWith("/admin")     && role === "admin") ||
+          (rawNext.startsWith("/hospital")  && (role === "hospital_staff" || role === "hospital")) ||
+          (rawNext.startsWith("/responder") && (role === "responder" || role === "volunteer")) ||
+          (rawNext.startsWith("/dashboard") && role === "user");
+        if (allowedForRole) destination = rawNext;
+      }
+
+      router.push(destination);
       router.refresh();
     } catch {
       setError("Network error. Please check your connection and try again.");

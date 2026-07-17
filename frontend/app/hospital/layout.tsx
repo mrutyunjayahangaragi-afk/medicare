@@ -24,8 +24,21 @@ export default async function HospitalLayout({
     .eq("id", user.id)
     .single();
 
-  // Check if user has hospital_staff role
-  if (!profileData || profileData.role !== "hospital_staff") {
+  // Check if user has hospital_staff role.
+  // Also handle the legacy "hospital" role value that may exist in older profiles.
+  const role = profileData?.role as string | undefined;
+  if (!profileData || (role !== "hospital_staff" && role !== "hospital")) {
+    // Check if this is a regular user who has a pending application
+    const { data: pendingApp } = await supabase
+      .from("portal_applications")
+      .select("status")
+      .eq("user_id", user.id)
+      .eq("application_type", "hospital")
+      .single();
+
+    if (pendingApp?.status === "pending") {
+      redirect("/application-pending");
+    }
     redirect("/unauthorized");
   }
 

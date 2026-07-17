@@ -30,7 +30,20 @@ export default async function ResponderLayout({
     .eq("id", user.id)
     .single();
 
-  if (!profile || (profile.role !== "responder" && profile.role !== "volunteer")) {
+  const role = profile?.role as string | undefined;
+
+  if (!profile || (role !== "responder" && role !== "volunteer")) {
+    // Check for a pending application before showing generic unauthorized
+    const { data: pendingApp } = await supabase
+      .from("portal_applications")
+      .select("status")
+      .eq("user_id", user.id)
+      .eq("application_type", "responder")
+      .single();
+
+    if (pendingApp?.status === "pending") {
+      redirect("/application-pending");
+    }
     redirect("/unauthorized");
   }
 

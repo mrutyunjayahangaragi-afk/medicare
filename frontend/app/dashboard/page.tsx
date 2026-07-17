@@ -91,14 +91,13 @@ export default async function DashboardPage() {
     }
   }
 
-  // Role check: Dashboard is only for normal users.
+  // Role-based redirect — every non-user role must be sent to their own portal.
+  // Never render the user dashboard for hospital, responder, or admin accounts.
   if (profileData) {
-    if (profileData.role === "volunteer") {
-      redirect("/coming-soon?role=volunteer");
-    }
-    if (profileData.role === "hospital") {
-      redirect("/coming-soon?role=hospital");
-    }
+    const role = profileData.role as string;
+    if (role === "admin")                               redirect("/admin");
+    if (role === "hospital_staff" || role === "hospital") redirect("/hospital");
+    if (role === "responder" || role === "volunteer")   redirect("/responder");
   }
 
   // Resolve user info safely for presentation
