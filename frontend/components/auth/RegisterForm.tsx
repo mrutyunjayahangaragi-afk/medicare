@@ -95,7 +95,7 @@ export default function RegisterForm() {
       const supabase  = createClient();
       const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
 
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email:    data.email.trim(),
         password: data.password,
         options:  {
@@ -111,7 +111,33 @@ export default function RegisterForm() {
         return;
       }
 
-      // Show "check your inbox" state
+      // If email confirmation is disabled, create profile immediately
+      // If email confirmation is enabled, profile will be created in the callback
+      if (signUpData.user && signUpData.session) {
+        // Email confirmation is disabled - create profile now
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert({
+            id: signUpData.user.id,
+            full_name: data.full_name.trim(),
+            email: data.email.trim(),
+            role: "user",
+            is_verified: true,
+            updated_at: new Date().toISOString(),
+          }, { onConflict: "id" });
+
+        if (profileError) {
+          console.error("[RegisterForm] Profile creation failed:", profileError.message);
+          // Don't block signup - user can still log in
+        }
+
+        // Redirect to dashboard since session exists
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
+
+      // Email confirmation is enabled - show "check your inbox" state
       setEmailSent(true);
     } catch {
       setError("Network error. Please check your connection and try again.");
