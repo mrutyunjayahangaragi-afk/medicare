@@ -25,7 +25,7 @@ const NO_RESULTS_DESC: Record<ServiceCategory | "all", string> = {
 const CONFIG: Record<
   EmptyReason,
   {
-    Icon: React.ElementType;
+    Icon: React.ComponentType<{ className?: string }>;
     title: string;
     description: (cat: ServiceCategory | "all") => string;
     iconBg: string;

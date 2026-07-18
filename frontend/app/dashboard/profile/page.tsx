@@ -77,12 +77,18 @@ export default async function ProfilePage() {
     (user.user_metadata?.picture as string | undefined) ||
     null;
 
+  // If profile data is missing, this is a data integrity issue - do not silently default
+  if (!profileData) {
+    console.error("[dashboard/profile] No profile data found for user:", user.id);
+    redirect("/login?error=no_profile");
+  }
+
   const profile: ProfileRow = {
     id: user.id,
     full_name: profileData?.full_name ?? resolvedName,
     email: user.email ?? null,
     phone: profileData?.phone ?? null,
-    role: profileData?.role ?? "user",
+    role: profileData.role,
     hospital_name: profileData?.hospital_name ?? null,
     avatar_url: resolvedAvatar,
     is_verified: profileData?.is_verified ?? true,

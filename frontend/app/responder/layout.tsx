@@ -23,12 +23,17 @@ export default async function ResponderLayout({
     redirect("/login");
   }
 
-  // Check if user is a responder or volunteer
-  const { data: profile } = await supabase
+  // Check if user is a responder or volunteer - use maybeSingle() to avoid PGRST116 error
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("[ResponderLayout] Profile query failed:", profileError.message, profileError.code);
+    redirect("/login?error=profile_error");
+  }
 
   const role = profile?.role as string | undefined;
 

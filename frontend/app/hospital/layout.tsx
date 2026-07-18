@@ -17,12 +17,17 @@ export default async function HospitalLayout({
     redirect("/login");
   }
 
-  // Fetch profile to check role
-  const { data: profileData } = await supabase
+  // Fetch profile to check role - use maybeSingle() to avoid PGRST116 error
+  const { data: profileData, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("[HospitalLayout] Profile query failed:", profileError.message, profileError.code);
+    redirect("/login?error=profile_error");
+  }
 
   // Check if user has hospital_staff role.
   // Also handle the legacy "hospital" role value that may exist in older profiles.

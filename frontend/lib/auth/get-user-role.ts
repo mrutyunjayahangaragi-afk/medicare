@@ -105,8 +105,9 @@ export function normalizeRole(raw: string | null | undefined): NormalizedRole {
   if (r === "responder")                         return "responder";
   if (r === "volunteer")                         return "volunteer";
   if (r === "user")                              return "user";
-  // Unknown role — do not default to user; caller must surface this.
-  // Returning "user" here would silently grant access to /dashboard.
+  // Unknown role — log warning and return "user" as safe default for routing
+  // but caller should still surface this as an error condition
+  console.warn("[normalizeRole] Unknown role detected:", raw, "- defaulting to 'user'");
   return "user";
 }
 
@@ -124,7 +125,9 @@ export function getRoleDashboardPath(role: NormalizedRole | string | null): stri
     case "responder":
     case "volunteer":     return "/responder";
     case "user":          return "/dashboard";
-    default:              return "/dashboard";
+    default:
+      console.warn("[getRoleDashboardPath] Unknown role for routing:", role, "- defaulting to /dashboard");
+      return "/dashboard";
   }
 }
 
