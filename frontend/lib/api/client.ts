@@ -227,6 +227,29 @@ export async function getEmergencyContacts(): Promise<ApiResponse<unknown[]>> {
   return apiFetch("/api/v1/emergency-contacts", { cache: "no-store" } as RequestInit);
 }
 
+/**
+ * GET /api/v1/emergency-contacts — returns the primary contact (is_primary: true)
+ * from the list, or null if none exists.
+ */
+export interface PrimaryContactResult {
+  id: string;
+  full_name: string;
+  phone_number: string;
+  relationship: string | null;
+}
+
+export async function getPrimaryEmergencyContact(): Promise<PrimaryContactResult | null> {
+  const res = await apiFetch<ApiResponse<PrimaryContactResult[]>>(
+    "/api/v1/emergency-contacts",
+    { cache: "no-store" } as RequestInit
+  );
+  const contacts = res.data ?? [];
+  const primary = contacts.find(
+    (c) => (c as unknown as { is_primary: boolean }).is_primary
+  );
+  return (primary as PrimaryContactResult) ?? null;
+}
+
 // ── Recommendations ────────────────────────────────────────────────────────
 
 export interface RecommendationPayload {

@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import type { Database } from "@/types/database";
+import { getRoleDashboardPath, normalizeRole } from "@/lib/auth/get-user-role";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -29,30 +30,42 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Always use getUser() — never getSession() — for secure server-side checks
+  // Always use getUser() — never getSession() — for secure server-side auth checks.
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   const { pathname } = request.nextUrl;
 
-  const protectedRoutes = ["/account", "/dashboard", "/profile", "/coming-soon", "/hospital", "/responder", "/application-pending", "/unauthorized"];
-  const adminRoutes = ["/admin"];
-  const publicOnlyRoutes = ["/login", "/register", "/admin/login"];
+  const protectedRoutes = [
+    "/account",
+    "/dashboard",
+    "/profile",
+    "/coming-soon",
+    "/hospital",
+    "/responder",
+    "/application-pending",
+    "/unauthorized",
+  ];
+  const adminRoutes    = ["/admin"];
+  const publicOnlyRoutes = ["/login", "/register"];
+  // /admin/login is handled separately — let the component deal with it
+  const adminLoginRoute = "/admin/login";
 
-  const isProtected = protectedRoutes.some((r) => pathname.startsWith(r));
-  const isAdminRoute = adminRoutes.some((r) => pathname.startsWith(r) && !pathname.startsWith("/admin/login"));
+  const isProtected  = protectedRoutes.some((r) => pathname.startsWith(r));
+  const isAdminRoute = adminRoutes.some(
+    (r) => pathname.startsWith(r) && !pathname.startsWith(adminLoginRoute)
+  );
   const isPublicOnly = publicOnlyRoutes.some((r) => pathname.startsWith(r));
 
-  // Handle admin routes specifically
+  // ── Unauthenticated: redirect to login ────────────────────────────
   if (isAdminRoute && !user) {
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/admin/login";
+    redirectUrl.pathname = adminLoginRoute;
     redirectUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Handle protected routes (non-admin)
   if (isProtected && !user) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = "/login";
@@ -60,17 +73,41 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  // For authenticated users on public-only routes, redirect to appropriate portal
+  // ── Authenticated user hitting /login or /register ─────────────────
+  // Look up their actual role so they land on the correct portal directly,
+  // without an intermediate /dashboard → /admin double-redirect.
   if (isPublicOnly && user) {
-    // Skip redirect for admin login page - let the component handle role-based redirect
-    if (pathname.startsWith("/admin/login")) {
-      return supabaseResponse;
+    let destination = "/dashboard"; // safe default if role lookup fails
+
+    try {
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        // Log on the server; do not silently fall back to /dashboard for
+        // a broken query — let the layout guard handle it properly.
+        console.error(
+          `[middleware] Profile role query failed for userId=${user.id}: ${error.message}`
+        );
+      } else if (profile?.role) {
+        const role = normalizeRole(profile.role as string);
+        destination = getRoleDashboardPath(role);
+
+        console.info("[middleware] Resolved access", {
+          userId: user.id,
+          databaseRole: role,
+          destination,
+        });
+      }
+    } catch (err) {
+      console.error("[middleware] Unexpected error resolving role:", err);
     }
-    
-    // For other public routes, redirect to dashboard
-    // The layout-level checks will handle proper portal redirection
+
     const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = "/dashboard";
+    redirectUrl.pathname = destination;
     return NextResponse.redirect(redirectUrl);
   }
 

@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { type TrustedRole, type LoginPortal, type RegistrationType, type ApplicationStatus, type ApplicationType } from "@/types/auth";
+import { normalizeRole } from "@/lib/auth/get-user-role";
 
 /**
  * Google OAuth + PKCE callback handler.
@@ -36,16 +37,22 @@ export async function GET(request: NextRequest) {
 
   // Ensure a profile row exists for this user.
   // For Google users this may be the first sign-in — upsert is safe.
-  const { data: existing } = await supabase
+  // Use maybeSingle() so a missing row returns null data without a PGRST116 error.
+  const { data: existing, error: existingError } = await supabase
     .from("profiles")
     .select("id, role, is_verified")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
+
+  if (existingError) {
+    console.error("[auth/callback] Profile fetch failed:", existingError.message, existingError.code);
+    return NextResponse.redirect(`${origin}/login?error=oauth_failed`);
+  }
 
   if (!existing) {
     const meta = user.user_metadata ?? {};
     const defaultRole = "user" as const;
-    
+
     await supabase.from("profiles").upsert(
       {
         id: user.id,
@@ -67,11 +74,19 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${origin}/application-pending`);
     }
 
+    // New user always starts as "user" role — send to user dashboard.
+    console.info("[auth/callback] New Google user created", {
+      userId: user.id,
+      databaseRole: defaultRole,
+      destination: "/dashboard",
+    });
     return NextResponse.redirect(`${origin}/dashboard`);
   }
 
-  // Resolve trusted role and authorized portal
-  const resolution = await resolveUserPortal(supabase, user.id, existing.role as string | null);
+  // Resolve trusted role and authorized portal.
+  // normalizeRole trims + lower-cases to prevent "Admin" vs "admin" mismatches.
+  const normalizedRole = normalizeRole(existing.role as string | null);
+  const resolution = await resolveUserPortal(supabase, user.id, normalizedRole);
 
   // Handle registration flow for existing users
   if (registrationType && (registrationType === "hospital" || registrationType === "responder")) {
@@ -138,7 +153,16 @@ export async function GET(request: NextRequest) {
   }
 
   // No portal requested - redirect to authorized portal or dashboard
-  const redirectPath = resolution.authorizedPortal || "/dashboard";
+  const rawPortal = resolution.authorizedPortal ?? "dashboard";
+  // Ensure the portal has a leading slash
+  const redirectPath = rawPortal.startsWith("/") ? rawPortal : `/${rawPortal}`;
+
+  console.info("[auth/callback] Resolved access", {
+    userId: user.id,
+    databaseRole: resolution.trustedRole,
+    destination: redirectPath,
+  });
+
   return NextResponse.redirect(`${origin}${redirectPath}`);
 }
 
@@ -204,7 +228,7 @@ async function resolveUserPortal(
 
   if (application) {
     return {
-      trustedRole: role,
+      trustedRole: role as TrustedRole,
       authorizedPortal: null,
       organizationId: null,
       applicationStatus: application.status as ApplicationStatus,
@@ -222,7 +246,7 @@ async function resolveUserPortal(
 
   if (rejectedApp) {
     return {
-      trustedRole: role,
+      trustedRole: role as TrustedRole,
       authorizedPortal: null,
       organizationId: null,
       applicationStatus: "rejected",
@@ -232,7 +256,7 @@ async function resolveUserPortal(
 
   // Plain user with no application
   return {
-    trustedRole: role,
+    trustedRole: role as TrustedRole,
     authorizedPortal: "dashboard",
     organizationId: null,
     applicationStatus: null,

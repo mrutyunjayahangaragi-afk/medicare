@@ -10,8 +10,12 @@
  * Role priority (highest wins):
  *   admin > hospital_staff > responder > volunteer > user
  *
- * Never use localStorage. Never trust client-supplied role values.
- * Role is always read from the server-side Supabase session.
+ * Security rules:
+ *   - Never use localStorage.
+ *   - Never trust client-supplied role values.
+ *   - Role is always read from the server-side Supabase session.
+ *   - Role query errors are thrown — never silently defaulted to "user".
+ *   - Role strings are trimmed + lower-cased before comparison.
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -26,27 +30,48 @@ export type NormalizedRole =
 
 /**
  * Read the user's role from public.profiles.
- * Falls back to "user" if the profile row is missing.
+ *
+ * Uses maybeSingle() so a missing profile row returns null data instead of
+ * throwing a PGRST116 error.
+ *
+ * Throws an error if the Supabase query itself fails (e.g. RLS, network) so
+ * callers are never silently degraded to "user" on a broken query.
  */
 export async function getUserRole(
   supabase: SupabaseClient,
   userId: string
 ): Promise<NormalizedRole> {
-  const { data: profile } = await supabase
+  const { data: profile, error } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
+  if (error) {
+    // Surface the error instead of silently falling back to "user".
+    // This makes RLS blocks, network failures, and schema problems visible.
+    throw new Error(
+      `[getUserRole] Profile query failed for userId=${userId}: ${error.message} (code=${error.code})`
+    );
+  }
+
+  // Profile row not found — new user with no profile yet
   if (!profile?.role) return "user";
 
-  const r = profile.role as string;
+  return normalizeRole(profile.role as string);
+}
 
-  // Map any legacy/alias values to the canonical set
-  if (r === "admin")         return "admin";
+/**
+ * Normalize a raw role string to one of the canonical NormalizedRole values.
+ * Trims whitespace and lower-cases before comparing so "Admin " and "ADMIN"
+ * both resolve correctly.
+ */
+export function normalizeRole(raw: string | null | undefined): NormalizedRole {
+  const r = (raw ?? "").trim().toLowerCase();
+  if (r === "admin")                             return "admin";
   if (r === "hospital_staff" || r === "hospital") return "hospital_staff";
-  if (r === "responder")     return "responder";
-  if (r === "volunteer")     return "volunteer";
+  if (r === "responder")                         return "responder";
+  if (r === "volunteer")                         return "volunteer";
   return "user";
 }
 
@@ -55,7 +80,8 @@ export async function getUserRole(
  * Used after login and in portal guards.
  */
 export function getRoleDashboardPath(role: NormalizedRole | string | null): string {
-  switch (role) {
+  const r = (role ?? "").trim().toLowerCase();
+  switch (r) {
     case "admin":         return "/admin";
     case "hospital_staff":
     case "hospital":      return "/hospital";
@@ -67,6 +93,7 @@ export function getRoleDashboardPath(role: NormalizedRole | string | null): stri
 
 /**
  * Convenience: get both the role and its dashboard path in one call.
+ * Throws if the profile query fails — never silently defaults.
  */
 export async function getUserRoleAndPath(
   supabase: SupabaseClient,

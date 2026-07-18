@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Siren, ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import CallPrimaryContactButton from "@/components/dashboard/CallPrimaryContactButton";
 
 interface WelcomeCardProps {
   user: {
@@ -91,6 +92,9 @@ export default function WelcomeCard({ user }: WelcomeCardProps) {
             <ClipboardList className="w-4 h-4" aria-hidden="true" />
             View My Requests
           </Link>
+
+          {/* Call Primary Contact — launches device phone app after confirmation */}
+          <CallPrimaryContactButton />
         </div>
       </div>
 

@@ -9,6 +9,7 @@ import RecentRequests, { type EmergencyRequest } from "@/components/dashboard/Re
 import NearbyHelp from "@/components/dashboard/NearbyHelp";
 import EmergencyContacts from "@/components/dashboard/EmergencyContacts";
 import HealthTips from "@/components/dashboard/HealthTips";
+import { normalizeRole } from "@/lib/auth/get-user-role";
 import type { EmergencyContact } from "@/types/database";
 
 export const metadata: Metadata = {
@@ -64,16 +65,18 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Fetch optional profile info
+  // Fetch optional profile info — use maybeSingle() to avoid PGRST116 error on missing row.
   const { data: profileData, error: profileError } = await supabase
     .from("profiles")
     .select("*")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (profileError && profileError.code !== "PGRST116") {
-    // Log PGRST116 (no row found) or other errors safely on the server
-    console.error("[Medicare Dashboard] Profile query error:", profileError.message);
+  if (profileError) {
+    // Surface the error — do not silently continue with a null profile.
+    console.error("[Dashboard] Profile query failed for userId:", user.id, profileError.message, profileError.code);
+    // Redirect to login on a hard query failure so the user knows something is wrong.
+    redirect("/login?error=profile_error");
   }
 
   // Check if it is an email/password user vs Google OAuth user.
@@ -97,11 +100,20 @@ export default async function DashboardPage() {
 
   // Role-based redirect — every non-user role must be sent to their own portal.
   // Never render the user dashboard for hospital, responder, or admin accounts.
+  // normalizeRole trims + lower-cases to prevent case mismatches.
   if (profileData) {
-    const role = profileData.role as string;
-    if (role === "admin")                               redirect("/admin");
-    if (role === "hospital_staff" || role === "hospital") redirect("/hospital");
-    if (role === "responder" || role === "volunteer")   redirect("/responder");
+    const role = normalizeRole(profileData.role as string);
+
+    console.info("[Dashboard] Resolved access", {
+      userId: user.id,
+      databaseRole: role,
+      destination: role === "admin" ? "/admin" : role === "hospital_staff" ? "/hospital" : role === "responder" || role === "volunteer" ? "/responder" : "/dashboard",
+    });
+
+    if (role === "admin")                                      redirect("/admin");
+    if (role === "hospital_staff")                             redirect("/hospital");
+    if (role === "responder" || role === "volunteer")          redirect("/responder");
+    // "user" role — fall through and render the dashboard.
   }
 
   // Resolve user info safely for presentation

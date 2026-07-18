@@ -5,58 +5,43 @@
  * Client-side hook that resolves the authenticated user's role from Supabase.
  *
  * Usage:
- *   const { role, path, loading } = useUserRole();
+ *   const { role, path, loading, error } = useUserRole();
  *
  * Returns:
  *   role    — "admin" | "hospital_staff" | "responder" | "volunteer" | "user" | null
  *   path    — the correct portal path for this role (/admin, /hospital, etc.)
  *   loading — true while the role is being fetched
+ *   error   — non-null when the profile query fails (never silently defaulted)
  *
- * Rules:
- *   - Always reads role from the database (profiles table) — never from localStorage
- *     or client-supplied values.
- *   - The mapping is identical to the server-side getRoleDashboardPath() helper.
- *   - Use this in client components only (use the server helper for SSR).
+ * Security rules:
+ *   - Always reads role from the database (profiles table).
+ *   - Never reads from localStorage or sessionStorage.
+ *   - Never trusts client-supplied role values.
+ *   - Role query errors are surfaced, not swallowed.
+ *   - Use the server helper (lib/auth/get-user-role.ts) for SSR.
  */
 
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { normalizeRole, getRoleDashboardPath, type NormalizedRole } from "@/lib/auth/get-user-role";
 
-export type ClientRole =
-  | "admin"
-  | "hospital_staff"
-  | "hospital"
-  | "responder"
-  | "volunteer"
-  | "user"
-  | null;
+export type ClientRole = NormalizedRole | null;
 
 export interface UseUserRoleResult {
   role: ClientRole;
   path: string;
   loading: boolean;
   userId: string | null;
+  error: string | null;
 }
 
-/**
- * Maps a role string to its portal path.
- * Mirrors lib/auth/get-user-role.ts#getRoleDashboardPath — single source of truth.
- */
-export function getRolePath(role: ClientRole | string | null): string {
-  switch (role) {
-    case "admin":         return "/admin";
-    case "hospital_staff":
-    case "hospital":      return "/hospital";
-    case "responder":
-    case "volunteer":     return "/responder";
-    default:              return "/dashboard";
-  }
-}
+export { getRoleDashboardPath as getRolePath };
 
 export function useUserRole(): UseUserRoleResult {
-  const [role, setRole]     = useState<ClientRole>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [role, setRole]       = useState<ClientRole>(null);
+  const [userId, setUserId]   = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,23 +58,31 @@ export function useUserRole(): UseUserRoleResult {
 
         setUserId(user.id);
 
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", user.id)
           .maybeSingle();
 
-        if (!cancelled) {
-          const raw = (profile?.role ?? "user") as string;
-          // Normalise to known roles
-          if (raw === "admin")                              setRole("admin");
-          else if (raw === "hospital_staff" || raw === "hospital") setRole("hospital_staff");
-          else if (raw === "responder")                    setRole("responder");
-          else if (raw === "volunteer")                    setRole("volunteer");
-          else                                              setRole("user");
+        if (cancelled) return;
+
+        if (profileError) {
+          // Surface the error — never silently default to "user".
+          console.error("[useUserRole] Profile query failed:", profileError.message, profileError.code);
+          setError(`Profile query failed: ${profileError.message}`);
+          setLoading(false);
+          return;
         }
-      } catch {
-        if (!cancelled) setRole("user");
+
+        // normalizeRole trims + lower-cases to prevent "Admin" / " admin" mismatches.
+        const normalized = normalizeRole(profile?.role as string | null | undefined);
+        setRole(normalized);
+      } catch (err: unknown) {
+        if (!cancelled) {
+          const msg = err instanceof Error ? err.message : "Unknown error";
+          console.error("[useUserRole] Unexpected error:", msg);
+          setError(msg);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -99,5 +92,11 @@ export function useUserRole(): UseUserRoleResult {
     return () => { cancelled = true; };
   }, []);
 
-  return { role, path: getRolePath(role), loading, userId };
+  return {
+    role,
+    path: getRoleDashboardPath(role),
+    loading,
+    userId,
+    error,
+  };
 }

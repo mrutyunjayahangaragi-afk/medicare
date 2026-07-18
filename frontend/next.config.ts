@@ -90,7 +90,8 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-              "style-src 'self' 'unsafe-inline' https://unpkg.com",
+              "style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
               // Tile subdomains a/b/c.tile.openstreetmap.org must all be permitted.
               // The bare hostname without wildcard does NOT cover them.
               "img-src 'self' data: blob: https://*.supabase.co https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://lh3.googleusercontent.com https://unpkg.com",

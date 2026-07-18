@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminTopNavbar from "@/components/admin/AdminTopNavbar";
+import { normalizeRole } from "@/lib/auth/get-user-role";
 
 export default async function AdminLayout({
   children,
@@ -18,24 +19,46 @@ export default async function AdminLayout({
     redirect("/admin/login");
   }
 
-  // Verify admin role
-  const { data: profile } = await supabase
+  // Verify admin role — use maybeSingle() to avoid PGRST116 on missing row.
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
     .eq("id", user.id)
-    .single();
+    .maybeSingle();
 
-  if (!profile || profile.role !== "admin") {
-    // Redirect to the correct portal based on the user's actual role
-    const role = profile?.role as string | undefined;
-    if (role === "hospital_staff" || role === "hospital") {
-      redirect("/hospital");
-    } else if (role === "responder" || role === "volunteer") {
-      redirect("/responder");
-    } else {
-      redirect("/dashboard");
-    }
+  if (profileError) {
+    console.error(
+      `[AdminLayout] Profile query failed for userId=${user.id}:`,
+      profileError.message,
+      profileError.code
+    );
+    // Query failure — do not grant access.
+    redirect("/unauthorized");
   }
+
+  // normalizeRole trims + lower-cases to prevent "Admin" / " admin" mismatches.
+  const role = normalizeRole(profile?.role as string | null | undefined);
+
+  if (role !== "admin") {
+    // Redirect to the correct portal based on the user's actual role.
+    const destination =
+      role === "hospital_staff" ? "/hospital"
+      : role === "responder" || role === "volunteer" ? "/responder"
+      : "/dashboard";
+
+    console.info("[AdminLayout] Non-admin access attempt redirected", {
+      userId: user.id,
+      databaseRole: role,
+      destination,
+    });
+    redirect(destination);
+  }
+
+  console.info("[AdminLayout] Resolved access", {
+    userId: user.id,
+    databaseRole: role,
+    destination: "/admin",
+  });
 
   return (
     <div className="min-h-screen bg-slate-50">
