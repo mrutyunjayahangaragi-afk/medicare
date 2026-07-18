@@ -47,8 +47,7 @@ export default async function ProfilePage() {
       hospital_name,
       is_verified,
       availability_status,
-      responder_type,
-      email
+      responder_type
     `)
     .eq("id", user.id)
     .maybeSingle();
