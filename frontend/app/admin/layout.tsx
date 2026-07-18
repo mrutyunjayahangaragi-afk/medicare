@@ -37,12 +37,13 @@ export default async function AdminLayout({
   }
 
   // normalizeRole trims + lower-cases to prevent "Admin" / " admin" mismatches.
+  // normalizeRole now returns "hospital" (not "hospital_staff") as the canonical value.
   const role = normalizeRole(profile?.role as string | null | undefined);
 
   if (role !== "admin") {
     // Redirect to the correct portal based on the user's actual role.
     const destination =
-      role === "hospital_staff" ? "/hospital"
+      role === "hospital" || role === "hospital_staff" ? "/hospital"
       : role === "responder" || role === "volunteer" ? "/responder"
       : "/dashboard";
 

@@ -77,8 +77,6 @@ export async function updateSession(request: NextRequest) {
   // Look up their actual role so they land on the correct portal directly,
   // without an intermediate /dashboard → /admin double-redirect.
   if (isPublicOnly && user) {
-    let destination = "/dashboard"; // safe default if role lookup fails
-
     try {
       const { data: profile, error } = await supabase
         .from("profiles")
@@ -87,28 +85,55 @@ export async function updateSession(request: NextRequest) {
         .maybeSingle();
 
       if (error) {
-        // Log on the server; do not silently fall back to /dashboard for
-        // a broken query — let the layout guard handle it properly.
-        console.error(
-          `[middleware] Profile role query failed for userId=${user.id}: ${error.message}`
-        );
-      } else if (profile?.role) {
-        const role = normalizeRole(profile.role as string);
-        destination = getRoleDashboardPath(role);
-
-        console.info("[middleware] Resolved access", {
+        // Profile query failed (RLS, network, schema) — do NOT silently
+        // route to /dashboard. Redirect to login with a clear error code
+        // so the user is informed and can retry.
+        console.error("[middleware] Profile role query failed", {
           userId: user.id,
-          databaseRole: role,
-          destination,
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
         });
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/login";
+        redirectUrl.searchParams.set("error", "role_lookup_failed");
+        return NextResponse.redirect(redirectUrl);
       }
+
+      if (!profile?.role) {
+        // Profile row missing or role column is null — cannot determine
+        // the correct portal; send back to login with an error.
+        console.warn("[middleware] No profile/role found for authenticated user", {
+          userId: user.id,
+        });
+        const redirectUrl = request.nextUrl.clone();
+        redirectUrl.pathname = "/login";
+        redirectUrl.searchParams.set("error", "no_profile");
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      const role = normalizeRole(profile.role as string);
+      const destination = getRoleDashboardPath(role);
+
+      console.info("[middleware] Resolved access", {
+        userId: user.id,
+        databaseRole: profile.role,
+        normalizedRole: role,
+        destination,
+      });
+
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = destination;
+      return NextResponse.redirect(redirectUrl);
     } catch (err) {
       console.error("[middleware] Unexpected error resolving role:", err);
+      // On unexpected error, redirect to login rather than /dashboard
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = "/login";
+      redirectUrl.searchParams.set("error", "role_lookup_failed");
+      return NextResponse.redirect(redirectUrl);
     }
-
-    const redirectUrl = request.nextUrl.clone();
-    redirectUrl.pathname = destination;
-    return NextResponse.redirect(redirectUrl);
   }
 
   return supabaseResponse;

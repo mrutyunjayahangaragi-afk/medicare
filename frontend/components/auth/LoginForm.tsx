@@ -37,13 +37,15 @@ function GoogleLogo() {
 }
 
 function getQueryError(err: string | null): string | null {
-  if (err === "oauth_failed")  return "Google sign-in failed. Please try again.";
-  if (err === "invalid_link")  return "This link is invalid.";
-  if (err === "link_expired")  return "This link has expired.";
-  if (err === "unauthorized")  return "Your account is not authorized for the selected portal.";
-  if (err === "pending")       return "Your application is still under review.";
-  if (err === "rejected")      return "Your application has been rejected.";
-  if (err === "suspended")     return "Your access has been suspended. Contact support.";
+  if (err === "oauth_failed")         return "Google sign-in failed. Please try again.";
+  if (err === "invalid_link")         return "This link is invalid.";
+  if (err === "link_expired")         return "This link has expired.";
+  if (err === "unauthorized")         return "Your account is not authorized for the selected portal.";
+  if (err === "pending")              return "Your application is still under review.";
+  if (err === "rejected")             return "Your application has been rejected.";
+  if (err === "suspended")            return "Your access has been suspended. Contact support.";
+  if (err === "role_lookup_failed")   return "Unable to verify your account role. Please try again.";
+  if (err === "no_profile")           return "No profile was found for this account. Please contact support.";
   return null;
 }
 

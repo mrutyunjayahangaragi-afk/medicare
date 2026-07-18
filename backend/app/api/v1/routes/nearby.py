@@ -54,6 +54,7 @@ from app.core.config import get_settings
 from app.services.geoapify_service import (
     fetch_nearby_services as _geoapify_fetch,
     get_ambulance_orgs_from_supabase,
+    get_hospital_orgs_from_supabase,
     deduplicate_services,
     get_demo_services,
 )
@@ -185,10 +186,15 @@ async def get_nearby_services(
             detail="Nearby services are temporarily unavailable.",
         )
 
-    # ── Supabase ambulance fallback ───────────────────────────────────────
-    # Geoapify has sparse ambulance_station data in many regions (often 0–1
-    # results). Supplement with verified ambulance_service orgs from Supabase.
-    # Hospital and pharmacy paths are NOT modified.
+    # ── Supabase fallbacks ────────────────────────────────────────────────
+    # Geoapify has sparse data in many regions of South Asia.
+    # • ambulance: always supplement with verified ambulance_service orgs.
+    # • pharmacy:  supplement with clinic orgs when Geoapify returns nothing
+    #              (clinics in India commonly dispense medicine on-site).
+    # • hospital:  supplement with verified hospital orgs when Geoapify
+    #              returns nothing (protects against OSM coverage gaps).
+    # Hospital and pharmacy fallbacks are NOT applied when Geoapify already
+    # returned results — we trust live data when it exists.
     sources: list[str] = ["geoapify"] if services else []
 
     if category in ("ambulance", "all"):
@@ -206,6 +212,49 @@ async def get_nearby_services(
                 sources.append("medicare")
         except Exception as exc:  # noqa: BLE001
             logger.warning("Supabase ambulance fallback failed: %s", exc)
+
+    # Pharmacy fallback — only when Geoapify returned 0 pharmacy results
+    geoapify_pharmacy_count = sum(
+        1 for s in services if s.get("category") == "pharmacy"
+    )
+    if category in ("pharmacy", "all") and geoapify_pharmacy_count == 0:
+        try:
+            supabase_pharm = get_hospital_orgs_from_supabase(
+                latitude, longitude, category="pharmacy", radius_km=radius_km
+            )
+            if supabase_pharm:
+                logger.info(
+                    "Supabase pharmacy/clinic fallback: %d orgs merged",
+                    len(supabase_pharm),
+                )
+                combined = deduplicate_services(services + supabase_pharm)
+                combined.sort(key=lambda s: s["distance_km"])
+                services = combined
+                if "medicare" not in sources:
+                    sources.append("medicare")
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Supabase pharmacy fallback failed: %s", exc)
+
+    # Hospital fallback — only when Geoapify returned 0 hospital results
+    geoapify_hospital_count = sum(
+        1 for s in services if s.get("category") == "hospital"
+    )
+    if category in ("hospital", "all") and geoapify_hospital_count == 0:
+        try:
+            supabase_hosp = get_hospital_orgs_from_supabase(
+                latitude, longitude, category="hospital", radius_km=radius_km
+            )
+            if supabase_hosp:
+                logger.info(
+                    "Supabase hospital fallback: %d orgs merged", len(supabase_hosp)
+                )
+                combined = deduplicate_services(services + supabase_hosp)
+                combined.sort(key=lambda s: s["distance_km"])
+                services = combined
+                if "medicare" not in sources:
+                    sources.append("medicare")
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Supabase hospital fallback failed: %s", exc)
 
     if services and "geoapify" not in sources:
         sources.append("geoapify")

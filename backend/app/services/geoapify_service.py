@@ -21,36 +21,52 @@ logger = logging.getLogger("medicare.services.geoapify")
 # ── Category mapping (valid Geoapify v2 category identifiers) ─────────────
 # Reference: https://apidocs.geoapify.com/docs/places/categories/
 #
-# IMPORTANT: Do NOT include healthcare.hospital in the ambulance map.
-# Geoapify has no real ambulance_station data in most regions.
-# Hospitals returned for the ambulance query are labelled "hospital" by
-# _infer_type and would be filtered out on the frontend.  The ambulance
-# fallback path (Supabase organisations) handles the real coverage gap.
+# Design notes:
+#
+# HOSPITAL — primary healthcare categories; clinic_or_praxis covers smaller
+#   medical centres tagged in OSM.
+#
+# PHARMACY — Geoapify tags pharmacies under TWO different category strings
+#   depending on the OSM tagging convention used in the region:
+#     • "healthcare.pharmacy"                      (OSM amenity=pharmacy)
+#     • "commercial.health_and_beauty.pharmacy"   (OSM shop=pharmacy)
+#   Both must be included.  In South Asian cities many pharmacies are tagged
+#   as a generic "healthcare" node, so we also include the bare "healthcare"
+#   parent as a broad net.  Results are later filtered by _infer_type so
+#   hospitals pulled in via the parent don't appear in the pharmacy list.
+#
+# AMBULANCE — Geoapify has very sparse coverage for emergency.ambulance_station
+#   in South Asia / tier-2 Indian cities (commonly 0 results at 25 km radius).
+#   We keep the specific emergency categories but add healthcare.hospital as a
+#   practical fallback, since major hospitals in India also run ambulance
+#   services.  The Supabase org fallback in the route handler covers the rest.
 
 CATEGORY_MAP: dict[str, list[str]] = {
     "hospital": [
         "healthcare.hospital",
         "healthcare.clinic_or_praxis",
+        "healthcare",
     ],
-    # Geoapify tags pharmacies under BOTH of these categories depending on region.
-    # Including both prevents the "0 results" failure mode.
     "pharmacy": [
         "healthcare.pharmacy",
         "commercial.health_and_beauty.pharmacy",
+        # Broad parent fallback — captures OSM nodes tagged only as "healthcare"
+        # in regions where the pharmacy sub-tag is absent.
+        "healthcare",
     ],
-    # Real ambulance/emergency categories — Geoapify returns sparse data in most
-    # regions (0–1 results). The Supabase fallback in the route covers the gap.
     "ambulance": [
         "emergency",
         "emergency.ambulance_station",
+        # Practical fallback for South Asia: hospitals that also run ambulances.
+        "healthcare.hospital",
     ],
 }
 
 # Sub-categories fetched when category="all".
-# Each is fetched independently so hospitals cannot crowd out pharmacies.
 _ALL_SUBCATEGORIES: list[str] = ["hospital", "pharmacy", "ambulance"]
 
-# How Geoapify category strings map back to our service type
+# How Geoapify category strings map back to our service type.
+# Evaluated in order — first match wins.
 _CATEGORY_TO_TYPE: list[tuple[str, str]] = [
     ("emergency", "ambulance"),
     ("ambulance", "ambulance"),
@@ -58,6 +74,7 @@ _CATEGORY_TO_TYPE: list[tuple[str, str]] = [
     ("health_and_beauty.pharmacy", "pharmacy"),
     ("hospital", "hospital"),
     ("clinic", "hospital"),
+    ("healthcare", "hospital"),
 ]
 
 
@@ -200,6 +217,11 @@ async def _fetch_single_category(
         "apiKey": api_key,  # server-side only, never logged
     }
 
+    logger.debug(
+        "Geoapify request: category=%s radius=%dm categories=%s",
+        category, radius_m, ",".join(cats),
+    )
+
     resp = await client.get("https://api.geoapify.com/v2/places", params=params)
 
     if resp.status_code == 401:
@@ -207,19 +229,66 @@ async def _fetch_single_category(
     if resp.status_code == 429:
         raise RuntimeError("Geoapify rate limit exceeded (429).")
     if resp.status_code == 400:
-        # Some categories return 400 when unsupported in a region — treat as empty
-        logger.debug("Geoapify 400 for category=%s (unsupported in this region)", category)
+        # Log the body so we can see which category string triggered it
+        logger.warning(
+            "Geoapify 400 for category=%s radius=%dm — body: %s",
+            category, radius_m, resp.text[:500],
+        )
         return []
     if resp.status_code != 200:
         raise RuntimeError(f"Geoapify returned HTTP {resp.status_code}.")
 
     data = resp.json()
+    features = data.get("features", [])
+    logger.debug(
+        "Geoapify raw response: category=%s -> %d features",
+        category, len(features),
+    )
+
     services: list[dict[str, Any]] = []
-    for feat in data.get("features", []):
+    for feat in features:
         normalized = _normalize_feature(feat, latitude, longitude, category)
         if normalized is not None:
             services.append(normalized)
+
+    logger.info(
+        "Geoapify category=%s radius=%dm -> %d results (categories: %s)",
+        category, radius_m, len(services), ",".join(cats),
+    )
     return services
+
+
+async def _fetch_with_fallback(
+    client: httpx.AsyncClient,
+    latitude: float,
+    longitude: float,
+    category: str,
+    radius_m: int,
+    limit: int,
+    api_key: str,
+) -> list[dict[str, Any]]:
+    """
+    Fetch a single category with an automatic radius-expansion retry.
+
+    If the primary request returns 0 results AND the radius is < 25 km,
+    retry once with 25 km to handle sparse OSM coverage in tier-2/3 cities.
+    This is the main reason pharmacy/ambulance return 0 in smaller Indian towns.
+    """
+    results = await _fetch_single_category(
+        client, latitude, longitude, category, radius_m, limit, api_key
+    )
+
+    if not results and radius_m < 25_000:
+        expanded = 25_000
+        logger.info(
+            "Geoapify 0 results for category=%s at %dm — retrying at %dm",
+            category, radius_m, expanded,
+        )
+        results = await _fetch_single_category(
+            client, latitude, longitude, category, expanded, limit, api_key
+        )
+
+    return results
 
 
 async def fetch_nearby_services(
@@ -262,7 +331,7 @@ async def fetch_nearby_services(
             if category == "all":
                 # Parallel fetch per sub-category so each gets its own limit
                 tasks = [
-                    _fetch_single_category(
+                    _fetch_with_fallback(
                         client, latitude, longitude, sub, radius_m, limit,
                         settings.geoapify_api_key,
                     )
@@ -282,7 +351,7 @@ async def fetch_nearby_services(
                     else:
                         services.extend(res)
             else:
-                services = await _fetch_single_category(
+                services = await _fetch_with_fallback(
                     client, latitude, longitude, category, radius_m, limit,
                     settings.geoapify_api_key,
                 )
@@ -311,11 +380,10 @@ def get_ambulance_orgs_from_supabase(
     fallback when live Geoapify data is absent or sparse.
 
     Only organisations where:
-      - organization_type IN ('ambulance', 'emergency', 'emergency_services')
+      - organization_type IN ('ambulance_service')
       - is_verified = True
       - latitude AND longitude are non-null
-    are returned.  Private details (email, internal IDs beyond place_id) are
-    not included — only public contact info.
+    are returned.  Only public contact info is included.
 
     Returns a normalised list in the same shape as _normalize_feature output.
     """
@@ -356,6 +424,87 @@ def get_ambulance_orgs_from_supabase(
                 "id": f"supabase_org_{row['id']}",
                 "name": name,
                 "category": "ambulance",
+                "address": row.get("address") or "",
+                "city": "",
+                "state": "",
+                "postcode": "",
+                "latitude": place_lat,
+                "longitude": place_lon,
+                "distance_km": round(dist_m / 1000, 2),
+                "phone": row.get("phone") or None,
+                "website": None,
+                "opening_hours": None,
+                "is_demo": False,
+                "source": "medicare",
+            }
+        )
+
+    results.sort(key=lambda s: s["distance_km"])
+    return results
+
+
+def get_hospital_orgs_from_supabase(
+    user_lat: float,
+    user_lon: float,
+    category: str = "hospital",
+    radius_km: float = 25.0,
+) -> list[dict]:
+    """
+    Fetch approved hospital/clinic organisations from Supabase as a fallback
+    when Geoapify returns 0 results for 'hospital' or 'pharmacy' queries in
+    regions with sparse OSM coverage.
+
+    For pharmacy queries, organisations tagged as 'clinic' are included since
+    clinics in India commonly dispense medicine on-site.
+
+    Returns a normalised list in the same shape as _normalize_feature output.
+    """
+    org_types = ["hospital"]
+    if category == "pharmacy":
+        org_types = ["clinic", "hospital"]  # clinics often dispense medicine in India
+
+    try:
+        from app.db.supabase import get_supabase_admin_client
+
+        client = get_supabase_admin_client()
+        resp = (
+            client.table("organizations")
+            .select("id, name, organization_type, phone, address, latitude, longitude")
+            .eq("is_verified", True)
+            .in_("organization_type", org_types)
+            .not_.is_("latitude", "null")
+            .not_.is_("longitude", "null")
+            .limit(100)
+            .execute()
+        )
+        rows = resp.data or []
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Supabase hospital/clinic fallback unavailable: %s", exc)
+        return []
+
+    results: list[dict] = []
+    for row in rows:
+        try:
+            place_lat = float(row["latitude"])
+            place_lon = float(row["longitude"])
+        except (TypeError, ValueError):
+            continue
+
+        dist_m = _haversine_m(user_lat, user_lon, place_lat, place_lon)
+        if dist_m / 1000 > radius_km:
+            continue
+
+        org_type = (row.get("organization_type") or "hospital").lower()
+        svc_category = "pharmacy" if (category == "pharmacy" and org_type == "clinic") else "hospital"
+
+        name = (row.get("name") or "").strip() or (
+            "Medical Clinic" if org_type == "clinic" else "Hospital"
+        )
+        results.append(
+            {
+                "id": f"supabase_org_{row['id']}",
+                "name": name,
+                "category": svc_category,
                 "address": row.get("address") or "",
                 "city": "",
                 "state": "",

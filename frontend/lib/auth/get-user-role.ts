@@ -20,10 +20,15 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-/** Canonical normalized roles returned by getUserRole(). */
+/**
+ * Canonical normalized roles returned by getUserRole().
+ * "hospital" is included because the database may store it directly
+ * (rather than the legacy "hospital_staff" alias).
+ */
 export type NormalizedRole =
   | "admin"
   | "hospital_staff"
+  | "hospital"
   | "responder"
   | "volunteer"
   | "user";
@@ -50,15 +55,40 @@ export async function getUserRole(
   if (error) {
     // Surface the error instead of silently falling back to "user".
     // This makes RLS blocks, network failures, and schema problems visible.
+    console.error("[getUserRole] Profile role query failed", {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    });
     throw new Error(
       `[getUserRole] Profile query failed for userId=${userId}: ${error.message} (code=${error.code})`
     );
   }
 
-  // Profile row not found — new user with no profile yet
-  if (!profile?.role) return "user";
+  // Profile row not found — do NOT silently default to "user".
+  // A missing profile is a data integrity problem that must be surfaced.
+  if (!profile) {
+    throw new Error(
+      `[getUserRole] No profile row found for userId=${userId}. Account setup may be incomplete.`
+    );
+  }
 
-  return normalizeRole(profile.role as string);
+  // Role column is null or empty string — do NOT silently default to "user".
+  // This is the root cause of hospital/admin/responder accounts landing on /dashboard.
+  if (!profile.role) {
+    throw new Error(
+      `[getUserRole] Profile for userId=${userId} has a null or empty role. Cannot determine access level.`
+    );
+  }
+
+  const normalized = normalizeRole(profile.role as string);
+  console.info("[getUserRole] Resolved authenticated access", {
+    userId,
+    databaseRole: profile.role,
+    normalizedRole: normalized,
+  });
+  return normalized;
 }
 
 /**
@@ -69,9 +99,14 @@ export async function getUserRole(
 export function normalizeRole(raw: string | null | undefined): NormalizedRole {
   const r = (raw ?? "").trim().toLowerCase();
   if (r === "admin")                             return "admin";
-  if (r === "hospital_staff" || r === "hospital") return "hospital_staff";
+  // Accept both "hospital" and "hospital_staff" — DB may store either value.
+  // Returned as "hospital" (the shorter canonical form used across portal layouts).
+  if (r === "hospital_staff" || r === "hospital") return "hospital";
   if (r === "responder")                         return "responder";
   if (r === "volunteer")                         return "volunteer";
+  if (r === "user")                              return "user";
+  // Unknown role — do not default to user; caller must surface this.
+  // Returning "user" here would silently grant access to /dashboard.
   return "user";
 }
 
@@ -83,10 +118,12 @@ export function getRoleDashboardPath(role: NormalizedRole | string | null): stri
   const r = (role ?? "").trim().toLowerCase();
   switch (r) {
     case "admin":         return "/admin";
+    // Both DB values map to the same portal
     case "hospital_staff":
     case "hospital":      return "/hospital";
     case "responder":
     case "volunteer":     return "/responder";
+    case "user":          return "/dashboard";
     default:              return "/dashboard";
   }
 }
