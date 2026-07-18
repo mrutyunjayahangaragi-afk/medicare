@@ -52,20 +52,26 @@ export async function GET(request: NextRequest) {
     const meta = user.user_metadata ?? {};
     const defaultRole = "user" as const;
 
-    await supabase.from("profiles").upsert(
-      {
-        id: user.id,
-        full_name: (meta.full_name as string | null) ?? (meta.name as string | null) ?? null,
-        email: user.email ?? null,
-        phone: null,
-        role: defaultRole,
-        hospital_name: null,
-        avatar_url: (meta.avatar_url as string | null) ?? (meta.picture as string | null) ?? null,
-        is_verified: true,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "id" }
-    );
+    // Use insert instead of upsert to avoid overwriting existing admin roles
+    // If profile exists, we'll use the centralized role resolver below
+    const { error: insertError } = await supabase.from("profiles").insert({
+      id: user.id,
+      full_name: (meta.full_name as string | null) ?? (meta.name as string | null) ?? null,
+      email: user.email ?? null,
+      phone: null,
+      role: defaultRole,
+      hospital_name: null,
+      avatar_url: (meta.avatar_url as string | null) ?? (meta.picture as string | null) ?? null,
+      is_verified: true,
+      updated_at: new Date().toISOString(),
+    });
+
+    // If insert fails due to duplicate (profile already exists), that's fine
+    // We'll use the existing profile's role in the centralized resolver
+    if (insertError && insertError.code !== "23505") {
+      console.error("[auth/callback] Profile insert failed:", insertError.message, insertError.code);
+      return NextResponse.redirect(`${origin}/login?error=oauth_failed`);
+    }
 
     // Handle registration flow - create application if needed
     if (registrationType && (registrationType === "hospital" || registrationType === "responder")) {
