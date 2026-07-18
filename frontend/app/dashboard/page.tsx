@@ -75,8 +75,9 @@ export default async function DashboardPage() {
   if (profileError) {
     // Surface the error — do not silently continue with a null profile.
     console.error("[Dashboard] Profile query failed for userId:", user.id, profileError.message, profileError.code);
-    // Redirect to login on a hard query failure so the user knows something is wrong.
-    redirect("/login?error=profile_error");
+    // Redirect to profile error page to avoid redirect loops
+    // User is authenticated but profile lookup failed
+    redirect("/auth/profile-error?reason=profile_error");
   }
 
   // Check if it is an email/password user vs Google OAuth user.

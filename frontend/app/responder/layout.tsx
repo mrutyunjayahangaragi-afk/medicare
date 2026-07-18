@@ -32,7 +32,7 @@ export default async function ResponderLayout({
 
   if (profileError) {
     console.error("[ResponderLayout] Profile query failed:", profileError.message, profileError.code);
-    redirect("/login?error=profile_error");
+    redirect("/auth/profile-error?reason=profile_error");
   }
 
   const role = profile?.role as string | undefined;

@@ -26,7 +26,7 @@ export default async function HospitalLayout({
 
   if (profileError) {
     console.error("[HospitalLayout] Profile query failed:", profileError.message, profileError.code);
-    redirect("/login?error=profile_error");
+    redirect("/auth/profile-error?reason=profile_error");
   }
 
   // Check if user has hospital_staff role.

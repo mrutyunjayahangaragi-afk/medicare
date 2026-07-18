@@ -94,7 +94,9 @@ export async function GET(request: NextRequest) {
 
   if (access.error || !access.destination) {
     console.error("[auth/callback] Role resolution failed:", access.error);
-    return NextResponse.redirect(`${origin}/login?error=role_lookup_failed`);
+    // Redirect to profile error page instead of login to avoid redirect loops
+    // User is authenticated but profile lookup failed
+    return NextResponse.redirect(`${origin}/auth/profile-error?reason=role_lookup_failed`);
   }
 
   // Handle registration flow for existing users

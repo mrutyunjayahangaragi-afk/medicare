@@ -50,12 +50,15 @@ export async function updateSession(request: NextRequest) {
   const publicOnlyRoutes = ["/login", "/register"];
   // /admin/login is handled separately — let the component deal with it
   const adminLoginRoute = "/admin/login";
+  // Profile error page must be public to avoid redirect loops
+  const profileErrorRoute = "/auth/profile-error";
 
   const isProtected  = protectedRoutes.some((r) => pathname.startsWith(r));
   const isAdminRoute = adminRoutes.some(
     (r) => pathname.startsWith(r) && !pathname.startsWith(adminLoginRoute)
   );
   const isPublicOnly = publicOnlyRoutes.some((r) => pathname.startsWith(r));
+  const isProfileError = pathname.startsWith(profileErrorRoute);
 
   // ── Unauthenticated: redirect to login ────────────────────────────
   if (isAdminRoute && !user) {
@@ -80,6 +83,12 @@ export async function updateSession(request: NextRequest) {
     // Allow authenticated users to stay on /login to see error messages
     // or re-authenticate. The login page will handle redirecting them
     // after successful role resolution.
+    return supabaseResponse;
+  }
+
+  // ── Profile error page must be accessible to authenticated users ───────
+  // This page handles role lookup failures and must not redirect back to dashboard
+  if (isProfileError) {
     return supabaseResponse;
   }
 
