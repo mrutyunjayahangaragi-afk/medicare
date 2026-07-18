@@ -101,7 +101,7 @@ export default async function DashboardPage() {
   // Role-based redirect — every non-user role must be sent to their own portal.
   // Never render the user dashboard for hospital, responder, or admin accounts.
   // normalizeRole trims + lower-cases to prevent case mismatches.
-  if (profileData) {
+  if (profileData && profileData.role) {
     const role = normalizeRole(profileData.role as string);
 
     console.info("[Dashboard] Resolved access", {
@@ -114,6 +114,22 @@ export default async function DashboardPage() {
     if (role === "hospital_staff" || role === "hospital")     redirect("/hospital");
     if (role === "responder" || role === "volunteer")          redirect("/responder");
     // "user" role — fall through and render the dashboard.
+  } else if (profileData && !profileData.role) {
+    // Profile exists but role is null/undefined - assign default "user" role
+    console.warn("[Dashboard] Profile exists but role is missing for user:", user.id, "- assigning default 'user' role");
+    // Continue to render dashboard as "user"
+  } else {
+    // No profile exists - create it with default "user" role
+    console.warn("[Dashboard] No profile found for user:", user.id, "- creating profile with default 'user' role");
+    await supabase.from("profiles").upsert({
+      id: user.id,
+      full_name: user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "User",
+      email: user.email,
+      role: "user",
+      is_verified: true,
+      updated_at: new Date().toISOString(),
+    }, { onConflict: "id" });
+    // Continue to render dashboard as "user"
   }
 
   // Resolve user info safely for presentation
