@@ -95,65 +95,24 @@ export default function LoginForm() {
         return;
       }
 
-      // Step 1: Authenticate first — verify session is live.
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setError("Session error. Please try again.");
+      console.info("[LoginForm] Authentication successful, resolving user access...");
+
+      // Use the centralized role resolver
+      const { resolveAuthenticatedUserAccess } = await import("@/lib/auth/resolve-user-access");
+      const access = await resolveAuthenticatedUserAccess(supabase);
+
+      if (access.error) {
+        setError(access.error);
         return;
       }
 
-      // Step 2: Fetch role using the authenticated user UUID — never the email.
-      //         Use maybeSingle() so a missing row returns null instead of throwing.
-      //         Never silently default to "user" — surface the error if the query fails.
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (profileError) {
-        // Role query failed (RLS, network, schema issue) — do not silently default.
-        console.error("[LoginForm] Profile role query failed:", profileError.message, profileError.code);
-        setError("Could not load your account role. Please try again.");
+      if (!access.destination) {
+        setError("Unable to determine your account destination. Please contact support.");
         return;
       }
 
-      if (!profile) {
-        // No profile row found — the profile may not have been created yet.
-        console.warn("[LoginForm] No profile row found for userId:", user.id);
-        setError("Account setup is incomplete. Please contact support.");
-        return;
-      }
-
-      // Step 3: Normalize the role — trim + toLowerCase prevents case mismatch.
-      const role = (profile.role as string).trim().toLowerCase();
-
-      // Step 4: Map DB role → destination portal path.
-      let destination: string;
-      if (role === "admin")                                      destination = "/admin";
-      else if (role === "hospital_staff" || role === "hospital") destination = "/hospital";
-      else if (role === "responder" || role === "volunteer")     destination = "/responder";
-      else                                                       destination = "/dashboard";
-
-      // Dev-safe audit log — no passwords or tokens logged.
-      console.info("[LoginForm] Resolved access", {
-        userId: user.id,
-        databaseRole: role,
-        destination,
-      });
-
-      // Step 5: Honour ?next= only when the user is authorized for that path.
-      const rawNext = nextUrl !== "/dashboard" ? nextUrl : null;
-      if (rawNext) {
-        const allowedForRole =
-          (rawNext.startsWith("/admin")     && role === "admin") ||
-          (rawNext.startsWith("/hospital")  && (role === "hospital_staff" || role === "hospital")) ||
-          (rawNext.startsWith("/responder") && (role === "responder" || role === "volunteer")) ||
-          (rawNext.startsWith("/dashboard") && role === "user");
-        if (allowedForRole) destination = rawNext;
-      }
-
-      router.push(destination);
+      console.info("[LoginForm] Redirecting to:", access.destination);
+      router.push(access.destination);
       router.refresh();
     } catch {
       setError("Network error. Please check your connection and try again.");

@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { type TrustedRole, type LoginPortal, type RegistrationType, type ApplicationStatus, type ApplicationType } from "@/types/auth";
-import { normalizeRole } from "@/lib/auth/get-user-role";
+import { type LoginPortal, type RegistrationType, type ApplicationType } from "@/types/auth";
 
 /**
  * Google OAuth + PKCE callback handler.
@@ -83,10 +82,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${origin}/dashboard`);
   }
 
-  // Resolve trusted role and authorized portal.
-  // normalizeRole trims + lower-cases to prevent "Admin" vs "admin" mismatches.
-  const normalizedRole = normalizeRole(existing.role as string | null);
-  const resolution = await resolveUserPortal(supabase, user.id, normalizedRole);
+  // Use the centralized role resolver for consistent routing
+  const { resolveAuthenticatedUserAccess } = await import("@/lib/auth/resolve-user-access");
+  const access = await resolveAuthenticatedUserAccess(supabase);
+
+  if (access.error || !access.destination) {
+    console.error("[auth/callback] Role resolution failed:", access.error);
+    return NextResponse.redirect(`${origin}/login?error=role_lookup_failed`);
+  }
 
   // Handle registration flow for existing users
   if (registrationType && (registrationType === "hospital" || registrationType === "responder")) {
@@ -97,8 +100,8 @@ export async function GET(request: NextRequest) {
   // Handle login flow with portal selection
   if (requestedPortal) {
     // Special handling for hospital and responder portals
-    // If user selects hospital/responder but doesn't have an application, create one
-    if ((requestedPortal === "hospital" || requestedPortal === "responder") && !resolution.authorizedPortal) {
+    // If user selects hospital/responder but doesn't have that role, create application
+    if ((requestedPortal === "hospital" || requestedPortal === "responder") && access.role !== requestedPortal) {
       // Check if application already exists
       const { data: existingApp } = await supabase
         .from("portal_applications")
@@ -126,142 +129,22 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if requested portal matches authorized portal
-    if (resolution.authorizedPortal === requestedPortal) {
-      return NextResponse.redirect(`${origin}/${resolution.authorizedPortal}`);
+    if (access.destination === `/${requestedPortal}`) {
+      return NextResponse.redirect(`${origin}${access.destination}`);
     }
 
-    // Portal mismatch - redirect to authorized portal with error
-    if (resolution.authorizedPortal) {
-      return NextResponse.redirect(`${origin}/${resolution.authorizedPortal}`);
-    }
-
-    // No authorized portal (e.g., pending application)
-    if (resolution.applicationStatus === "pending") {
-      return NextResponse.redirect(`${origin}/application-pending`);
-    }
-
-    if (resolution.applicationStatus === "rejected") {
-      return NextResponse.redirect(`${origin}/application-rejected`);
-    }
-
-    if (resolution.applicationStatus === "suspended") {
-      return NextResponse.redirect(`${origin}/login?error=suspended`);
-    }
-
-    // Default to user dashboard
-    return NextResponse.redirect(`${origin}/dashboard`);
+    // Portal mismatch - redirect to authorized portal
+    return NextResponse.redirect(`${origin}${access.destination}`);
   }
 
-  // No portal requested - redirect to authorized portal or dashboard
-  const rawPortal = resolution.authorizedPortal ?? "dashboard";
-  // Ensure the portal has a leading slash
-  const redirectPath = rawPortal.startsWith("/") ? rawPortal : `/${rawPortal}`;
-
+  // No portal requested - redirect to resolved destination
   console.info("[auth/callback] Resolved access", {
     userId: user.id,
-    databaseRole: resolution.trustedRole,
-    destination: redirectPath,
+    databaseRole: access.role,
+    destination: access.destination,
   });
 
-  return NextResponse.redirect(`${origin}${redirectPath}`);
-}
-
-async function resolveUserPortal(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  userId: string,
-  role: TrustedRole | string | null
-): Promise<{
-  trustedRole: TrustedRole | null;
-  authorizedPortal: string | null;
-  organizationId: string | null;
-  applicationStatus: ApplicationStatus | null;
-  applicationType: ApplicationType | null;
-}> {
-  if (!role) {
-    return {
-      trustedRole: null,
-      authorizedPortal: null,
-      organizationId: null,
-      applicationStatus: null,
-      applicationType: null,
-    };
-  }
-
-  // Approved users (hospital_staff, responder, admin) have their role set —
-  // go straight to portal. Only check pending applications for "user" role
-  // since they don't have a portal role yet.
-  if (role !== "user") {
-    // Role is already elevated — skip application status checks and go to portal
-    switch (role) {
-      case "admin":
-        return { trustedRole: role, authorizedPortal: "admin", organizationId: null, applicationStatus: null, applicationType: null };
-      case "hospital_staff":
-      case "hospital": {
-        const { data: hospitalOrg } = await supabase
-          .from("organization_members")
-          .select("organization_id")
-          .eq("user_id", userId)
-          .eq("status", "approved")
-          .maybeSingle();
-        return {
-          trustedRole: role as TrustedRole,
-          authorizedPortal: "hospital",
-          organizationId: hospitalOrg?.organization_id ?? null,
-          applicationStatus: null,
-          applicationType: null,
-        };
-      }
-      case "responder":
-      case "volunteer":
-        return { trustedRole: role as TrustedRole, authorizedPortal: "responder", organizationId: null, applicationStatus: null, applicationType: null };
-    }
-  }
-
-  // For "user" role — check pending / rejected applications before redirecting
-  // Check for pending applications
-  const { data: application } = await supabase
-    .from("portal_applications")
-    .select("status, application_type")
-    .eq("user_id", userId)
-    .eq("status", "pending")
-    .maybeSingle();
-
-  if (application) {
-    return {
-      trustedRole: role as TrustedRole,
-      authorizedPortal: null,
-      organizationId: null,
-      applicationStatus: application.status as ApplicationStatus,
-      applicationType: application.application_type as ApplicationType,
-    };
-  }
-
-  // Check for rejected applications (user role still, never approved)
-  const { data: rejectedApp } = await supabase
-    .from("portal_applications")
-    .select("status")
-    .eq("user_id", userId)
-    .eq("status", "rejected")
-    .maybeSingle();
-
-  if (rejectedApp) {
-    return {
-      trustedRole: role as TrustedRole,
-      authorizedPortal: null,
-      organizationId: null,
-      applicationStatus: "rejected",
-      applicationType: null,
-    };
-  }
-
-  // Plain user with no application
-  return {
-    trustedRole: role as TrustedRole,
-    authorizedPortal: "dashboard",
-    organizationId: null,
-    applicationStatus: null,
-    applicationType: null,
-  };
+  return NextResponse.redirect(`${origin}${access.destination}`);
 }
 
 async function createApplication(
