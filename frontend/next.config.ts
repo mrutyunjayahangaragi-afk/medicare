@@ -27,7 +27,8 @@ function buildConnectSrc(): string {
 }
 
 const nextConfig: NextConfig = {
-  // Silence the "multiple lockfiles" workspace root warning from Turbopack
+  // Set turbopack root to frontend directory to avoid workspace root warning
+  // This is needed because there's a package-lock.json in the parent directory
   turbopack: {
     root: __dirname,
   },

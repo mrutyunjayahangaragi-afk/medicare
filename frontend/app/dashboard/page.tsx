@@ -111,7 +111,7 @@ export default async function DashboardPage() {
     });
 
     if (role === "admin")                                      redirect("/admin");
-    if (role === "hospital_staff")                             redirect("/hospital");
+    if (role === "hospital_staff" || role === "hospital")     redirect("/hospital");
     if (role === "responder" || role === "volunteer")          redirect("/responder");
     // "user" role — fall through and render the dashboard.
   }
