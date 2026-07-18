@@ -55,10 +55,10 @@ export default function RequestsPage() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       filtered = filtered.filter((r) =>
-        r.emergency_type.toLowerCase().includes(q) ||
-        r.description.toLowerCase().includes(q) ||
-        (r.manual_address ?? "").toLowerCase().includes(q) ||
-        r.contact_number.toLowerCase().includes(q)
+        (r.emergency_type || "").toLowerCase().includes(q) ||
+        (r.description || "").toLowerCase().includes(q) ||
+        (r.manual_address || "").toLowerCase().includes(q) ||
+        (r.contact_number || "").toLowerCase().includes(q)
       );
     }
 

@@ -174,7 +174,7 @@ export default async function DashboardPage() {
     location:
       req.manual_address ||
       (req.latitude && req.longitude
-        ? `${(req.latitude as number).toFixed(4)}, ${(req.longitude as number).toFixed(4)}`
+        ? `${Number(req.latitude).toFixed(4)}, ${Number(req.longitude).toFixed(4)}`
         : "Location unavailable"),
     severity: mapSeverity(req.severity),
     status: mapStatus(req.status),

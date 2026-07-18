@@ -31,7 +31,7 @@ export default function RequestCard({ request, onViewDetails }: RequestCardProps
       return request.manual_address;
     }
     if (request.latitude && request.longitude) {
-      return `${request.latitude.toFixed(4)}, ${request.longitude.toFixed(4)}`;
+      return `${Number(request.latitude).toFixed(4)}, ${Number(request.longitude).toFixed(4)}`;
     }
     return "No location";
   };

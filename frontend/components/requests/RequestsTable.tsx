@@ -26,7 +26,7 @@ export default function RequestsTable({ requests, onViewDetails }: RequestsTable
       return request.manual_address.substring(0, 30) + (request.manual_address.length > 30 ? "..." : "");
     }
     if (request.latitude && request.longitude) {
-      return `${request.latitude.toFixed(4)}, ${request.longitude.toFixed(4)}`;
+      return `${Number(request.latitude).toFixed(4)}, ${Number(request.longitude).toFixed(4)}`;
     }
     return "No location";
   };
