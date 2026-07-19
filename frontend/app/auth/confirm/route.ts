@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   const { error } = await supabase.auth.verifyOtp({ type, token_hash });
 
   if (error) {
-    console.error("[auth/confirm] OTP verification failed:", error.code);
+    console.error("[auth/confirm] OTP verification failed:", error.code, error.message);
     return NextResponse.redirect(`${origin}/login?error=link_expired`);
   }
 

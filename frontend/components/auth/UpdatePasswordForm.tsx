@@ -51,17 +51,46 @@ export default function UpdatePasswordForm() {
     setAuthError(null);
 
     const supabase = createClient();
-    const { error } = await supabase.auth.updateUser({ password: data.password });
 
-    setLoading(false);
+    try {
+      // Verify a valid recovery session exists
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-    if (error) {
-      setAuthError(getAuthErrorMessage(error));
-      return;
+      if (sessionError || !session) {
+        setAuthError("This password reset link is invalid or expired. Please request a new link.");
+        return;
+      }
+
+      // Update the password
+      const { error: updateError } = await supabase.auth.updateUser({ password: data.password });
+
+      if (updateError) {
+        console.error("Password update failed:", {
+          message: updateError.message,
+          status: updateError.status,
+          code: updateError.code,
+        });
+        setAuthError(getAuthErrorMessage(updateError));
+        return;
+      }
+
+      // Sign out the user after successful password update
+      await supabase.auth.signOut();
+
+      setSuccess(true);
+      setTimeout(() => {
+        router.push("/login?message=password_reset_success");
+        router.refresh();
+      }, 1500);
+    } catch (err) {
+      console.error("Unexpected password update error:", err);
+      setAuthError("Unable to update your password. Please try again.");
+    } finally {
+      setLoading(false);
     }
-
-    setSuccess(true);
-    setTimeout(() => router.push("/login"), 2500);
   };
 
   return (

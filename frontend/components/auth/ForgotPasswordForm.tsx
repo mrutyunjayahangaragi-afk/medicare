@@ -19,6 +19,7 @@ type ForgotFormValues = z.infer<typeof forgotSchema>;
 export default function ForgotPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
   const {
@@ -29,18 +30,35 @@ export default function ForgotPasswordForm() {
 
   const onSubmit = async (data: ForgotFormValues) => {
     setLoading(true);
+    setError(null);
 
     const supabase = createClient();
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
 
-    // Always show the generic success message — never reveal whether
-    // an email is registered or not.
-    await supabase.auth.resetPasswordForEmail(data.email, {
-      redirectTo: `${siteUrl}/auth/update-password`,
-    });
+    try {
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(data.email.trim().toLowerCase(), {
+        redirectTo: `${siteUrl}/auth/confirm?type=recovery`,
+      });
 
-    setLoading(false);
-    setSubmitted(true);
+      if (resetError) {
+        console.error("Password reset request failed:", {
+          message: resetError.message,
+          status: resetError.status,
+          code: resetError.code,
+        });
+        setError(resetError.message);
+        return;
+      }
+
+      // Always show the generic success message — never reveal whether
+      // an email is registered or not.
+      setSubmitted(true);
+    } catch (err) {
+      console.error("Unexpected reset error:", err);
+      setError("Unable to send the reset email. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,6 +84,21 @@ export default function ForgotPasswordForm() {
                 Enter your email address and we&apos;ll send reset instructions.
               </p>
             </div>
+
+            {/* Error banner */}
+            <AnimatePresence initial={false}>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 font-medium"
+                  role="alert"
+                >
+                  {error}
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <form
               onSubmit={handleSubmit(onSubmit)}

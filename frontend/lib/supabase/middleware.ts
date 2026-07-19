@@ -52,6 +52,8 @@ export async function updateSession(request: NextRequest) {
   const adminLoginRoute = "/admin/login";
   // Profile error page must be public to avoid redirect loops
   const profileErrorRoute = "/auth/profile-error";
+  // Password recovery routes must be public
+  const recoveryRoutes = ["/forgot-password", "/auth/update-password", "/auth/confirm"];
 
   const isProtected  = protectedRoutes.some((r) => pathname.startsWith(r));
   const isAdminRoute = adminRoutes.some(
@@ -59,6 +61,7 @@ export async function updateSession(request: NextRequest) {
   );
   const isPublicOnly = publicOnlyRoutes.some((r) => pathname.startsWith(r));
   const isProfileError = pathname.startsWith(profileErrorRoute);
+  const isRecovery = recoveryRoutes.some((r) => pathname.startsWith(r));
 
   // ── Unauthenticated: redirect to login ────────────────────────────
   if (isAdminRoute && !user) {
@@ -89,6 +92,12 @@ export async function updateSession(request: NextRequest) {
   // ── Profile error page must be accessible to authenticated users ───────
   // This page handles role lookup failures and must not redirect back to dashboard
   if (isProfileError) {
+    return supabaseResponse;
+  }
+
+  // ── Password recovery routes must be accessible to authenticated users ──
+  // These routes handle password reset and must not redirect to dashboard
+  if (isRecovery) {
     return supabaseResponse;
   }
 
